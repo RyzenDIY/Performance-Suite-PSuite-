@@ -1,0 +1,69 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="PSuiteBackgroundColor">#FF050708</Color>
+    <Color x:Key="PSuiteSurfaceColor">#FF0A0F0D</Color>
+    <Color x:Key="PSuiteSurfaceRaisedColor">#FF0D1512</Color>
+    <Color x:Key="PSuiteBorderColor">#FF1C2320</Color>
+    <Color x:Key="PSuiteBorderStrongColor">#FF2A332E</Color>
+
+    <SolidColorBrush x:Key="PSuiteBackgroundBrush" Color="{StaticResource PSuiteBackgroundColor}" />
+    <SolidColorBrush x:Key="PSuiteSurfaceBrush" Color="{StaticResource PSuiteSurfaceColor}" />
+    <SolidColorBrush x:Key="PSuiteSurfaceRaisedBrush" Color="{StaticResource PSuiteSurfaceRaisedColor}" />
+    <SolidColorBrush x:Key="PSuiteBorderBrush" Color="{StaticResource PSuiteBorderColor}" />
+    <SolidColorBrush x:Key="PSuiteBorderStrongBrush" Color="{StaticResource PSuiteBorderStrongColor}" />
+
+    <SolidColorBrush x:Key="PSuiteTextPrimaryBrush" Color="#FFE6F5EE" />
+    <SolidColorBrush x:Key="PSuiteTextSecondaryBrush" Color="#FF9AA3A0" />
+    <SolidColorBrush x:Key="PSuiteTextMutedBrush" Color="#FF5A635F" />
+
+    <Color x:Key="PSuiteAccentTealColor">#FF1D9E75</Color>
+    <Color x:Key="PSuiteAccentTealLightColor">#FF5DCAA5</Color>
+    <Color x:Key="PSuiteAccentGreenColor">#FF8FD14F</Color>
+
+    <SolidColorBrush x:Key="PSuiteAccentTealBrush" Color="{StaticResource PSuiteAccentTealColor}" />
+    <SolidColorBrush x:Key="PSuiteAccentTealLightBrush" Color="{StaticResource PSuiteAccentTealLightColor}" />
+    <SolidColorBrush x:Key="PSuiteAccentGreenBrush" Color="{StaticResource PSuiteAccentGreenColor}" />
+
+    <LinearGradientBrush x:Key="PSuiteAccentGradientBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource PSuiteAccentTealLightColor}" Offset="0.0" />
+        <GradientStop Color="{StaticResource PSuiteAccentGreenColor}" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PSuiteSilverGradientBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFF2F4F3" Offset="0.0" />
+        <GradientStop Color="#FF9AA3A0" Offset="1.0" />
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="PSuiteStatusSafeFgBrush" Color="#FF5DCAA5" />
+    <SolidColorBrush x:Key="PSuiteStatusSafeBgBrush" Color="#FF0D2A20" />
+    <SolidColorBrush x:Key="PSuiteStatusSafeBorderBrush" Color="#FF175C44" />
+
+    <SolidColorBrush x:Key="PSuiteStatusAdvancedFgBrush" Color="#FFEF9F27" />
+    <SolidColorBrush x:Key="PSuiteStatusAdvancedBgBrush" Color="#FF1C1607" />
+    <SolidColorBrush x:Key="PSuiteStatusAdvancedBorderBrush" Color="#FF5C4708" />
+
+    <SolidColorBrush x:Key="PSuiteStatusExperimentalFgBrush" Color="#FF85B7EB" />
+    <SolidColorBrush x:Key="PSuiteStatusExperimentalBgBrush" Color="#FF0B1B2A" />
+    <SolidColorBrush x:Key="PSuiteStatusExperimentalBorderBrush" Color="#FF17395C" />
+
+    <SolidColorBrush x:Key="PSuiteStatusBlockedFgBrush" Color="#FFE24B4A" />
+    <SolidColorBrush x:Key="PSuiteStatusBlockedBgBrush" Color="#FF2A1414" />
+    <SolidColorBrush x:Key="PSuiteStatusBlockedBorderBrush" Color="#FF5C1A1A" />
+
+    <!-- Status banner (ShowStatus): reuses the Safe/Blocked palette above
+         so success/error colors are consistent with the risk badges
+         elsewhere in the app, instead of introducing a third color pair. -->
+    <SolidColorBrush x:Key="PSuiteSuccessBrush" Color="#FF5DCAA5" />
+    <SolidColorBrush x:Key="PSuiteSuccessBgBrush" Color="#FF0D2A20" />
+    <SolidColorBrush x:Key="PSuiteErrorBrush" Color="#FFE24B4A" />
+    <SolidColorBrush x:Key="PSuiteErrorBgBrush" Color="#FF2A1414" />
+
+    <!-- For Analysis-page "unknown status" lines specifically — needs to
+         be clearly readable (unlike PSuiteTextMutedBrush, which is a very
+         low-emphasis decorative gray meant for captions, not something a
+         person is meant to actually read as a value). -->
+    <SolidColorBrush x:Key="PSuiteAnalysisUnknownBrush" Color="#FF8B95A3" />
+
+</ResourceDictionary>

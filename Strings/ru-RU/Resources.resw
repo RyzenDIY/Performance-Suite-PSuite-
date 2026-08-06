@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Settings_Language_Title.Text" xml:space="preserve">
+    <value>Язык интерфейса</value>
+  </data>
+  <data name="Settings_Language_Desc.Text" xml:space="preserve">
+    <value>Применится после перезапуска PSuite (нажми на язык — предложу перезапустить).</value>
+  </data>
+  <data name="Settings_Language_Uk.Content" xml:space="preserve">
+    <value>Українська</value>
+  </data>
+  <data name="Settings_Language_Ru.Content" xml:space="preserve">
+    <value>Русский</value>
+  </data>
+  <data name="Settings_Language_En.Content" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Settings_Experimental_Title.Text" xml:space="preserve">
+    <value>Показывать Experimental твики</value>
+  </data>
+  <data name="Settings_Experimental_Desc.Text" xml:space="preserve">
+    <value>Твики с неопределённым поведением на разных сборках Windows.</value>
+  </data>
+  <data name="Settings_ToggleSwitch.OnContent" xml:space="preserve">
+    <value>Вкл</value>
+  </data>
+  <data name="Settings_ToggleSwitch.OffContent" xml:space="preserve">
+    <value>Выкл</value>
+  </data>
+  <data name="Settings_Startup_Title.Text" xml:space="preserve">
+    <value>Запускать PSuite вместе с Windows</value>
+  </data>
+  <data name="Settings_Startup_Desc.Text" xml:space="preserve">
+    <value>Добавляет PSuite в автозагрузку Windows через официальный StartupTask API — появится в Диспетчере задач → Автозагрузка. Прав администратора не требует.</value>
+  </data>
+  <data name="Settings_RestorePoint_Title.Text" xml:space="preserve">
+    <value>Точка восстановления перед применением твика</value>
+  </data>
+  <data name="Settings_RestorePoint_Desc.Text" xml:space="preserve">
+    <value>Настоящая точка восстановления Windows (Checkpoint-Computer). Требует включённой защиты системы для диска C:. Windows сама ограничивает создание точек — не чаще раза в 24 часа.</value>
+  </data>
+  <data name="Settings_CreateRestorePointNow.Content" xml:space="preserve">
+    <value>Создать точку восстановления сейчас</value>
+  </data>
+  <data name="Settings_ModulesFolder_Title.Text" xml:space="preserve">
+    <value>Папка модулей</value>
+  </data>
+  <data name="Settings_OpenFolder.Content" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="Settings_Import_Title.Text" xml:space="preserve">
+    <value>Импорт модуля</value>
+  </data>
+  <data name="Settings_Import_Desc.Text" xml:space="preserve">
+    <value>Добавить твик-модуль из папки или .zip архива.</value>
+  </data>
+  <data name="Settings_ImportFromFolder.Content" xml:space="preserve">
+    <value>Из папки</value>
+  </data>
+  <data name="Settings_ImportFromZip.Content" xml:space="preserve">
+    <value>Из .zip</value>
+  </data>
+  <data name="Settings_AiPrompt_Title.Text" xml:space="preserve">
+    <value>Промт для ИИ</value>
+  </data>
+  <data name="Settings_AiPrompt_Desc.Text" xml:space="preserve">
+    <value>Полная инструкция по формату модуля PSuite — подходит для любой модели (ChatGPT, Claude, Codex).</value>
+  </data>
+  <data name="Settings_CopyPrompt.Content" xml:space="preserve">
+    <value>Скопировать</value>
+  </data>
+  <data name="Settings_LogExport_Title.Text" xml:space="preserve">
+    <value>Журнал операций</value>
+  </data>
+  <data name="Settings_LogExport_Desc.Text" xml:space="preserve">
+    <value>Сохранить читаемый текстовый файл журнала для отправки при баг-репорте.</value>
+  </data>
+  <data name="Settings_ExportLogs.Content" xml:space="preserve">
+    <value>Экспортировать</value>
+  </data>
+  <data name="Settings_BenchmarkBaseline_Title.Text" xml:space="preserve">
+    <value>Базовый замер бенчмарка</value>
+  </data>
+  <data name="Settings_BenchmarkBaseline_Desc.Text" xml:space="preserve">
+    <value>Performance Score считается относительно первого запуска бенчмарка. Сбрось, если поменял железо — иначе счёт будет сравнивать разные системы.</value>
+  </data>
+  <data name="Settings_ResetBaseline.Content" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="Settings_AccentColor_Title.Text" xml:space="preserve">
+    <value>Цвет акцента</value>
+  </data>
+  <data name="Settings_AccentColor_Desc.Text" xml:space="preserve">
+    <value>Меняет подсветку кнопок, активной вкладки и «лучше/хуже» в бенчмарке по всему приложению.</value>
+  </data>
+  <data name="Settings_AccentGreen.Content" xml:space="preserve">
+    <value>Зелёный</value>
+  </data>
+  <data name="Settings_AccentRed.Content" xml:space="preserve">
+    <value>Красный</value>
+  </data>
+  <data name="Settings_AccentYellow.Content" xml:space="preserve">
+    <value>Жёлтый</value>
+  </data>
+  <data name="Settings_AccentBlue.Content" xml:space="preserve">
+    <value>Синий</value>
+  </data>
+  <data name="Settings_AccentPurple.Content" xml:space="preserve">
+    <value>Фиолетовый</value>
+  </data>
+  <data name="Settings_CustomPalette.Header" xml:space="preserve">
+    <value>Своя палитра</value>
+  </data>
+  <data name="Settings_ColorFilter_Title.Text" xml:space="preserve">
+    <value>Цвета экрана (эксперимент)</value>
+  </data>
+  <data name="Settings_ColorFilter_Desc.Text" xml:space="preserve">
+    <value>Яркость / контраст / гамма всего экрана через Windows Gamma Ramp API — как Night Light, но настраиваемо вручную. Действует на весь экран, не только на игру, и сбрасывается после перезагрузки.</value>
+  </data>
+  <data name="Settings_ColorFilter_Brightness.Text" xml:space="preserve">
+    <value>Яркость</value>
+  </data>
+  <data name="Settings_ColorFilter_Contrast.Text" xml:space="preserve">
+    <value>Контраст</value>
+  </data>
+  <data name="Settings_ColorFilter_Gamma.Text" xml:space="preserve">
+    <value>Гамма</value>
+  </data>
+  <data name="Settings_ColorFilter_Reset.Content" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="Settings_ColorFilter_Limitation.Text" xml:space="preserve">
+    <value>Честно: это НЕ насыщенность и НЕ резкость (как в NVIDIA Freestyle) — для этого нужен доступ к рендеру конкретной игры (перехват DirectX), это другая по масштабу задача. Здесь — только то, что реально можно сделать системно: яркость/контраст/гамма всего экрана.</value>
+  </data>
+  <data name="Splash_Loading.Text" xml:space="preserve">
+    <value>Загрузка модулей...</value>
+  </data>
+  <data name="Nav_Tweaks.Text" xml:space="preserve">
+    <value>Твики</value>
+  </data>
+  <data name="Nav_Analysis.Text" xml:space="preserve">
+    <value>Анализ</value>
+  </data>
+  <data name="Nav_Rollback.Text" xml:space="preserve">
+    <value>Откат</value>
+  </data>
+  <data name="Nav_Logs.Text" xml:space="preserve">
+    <value>Логи</value>
+  </data>
+  <data name="Nav_Benchmark.Text" xml:space="preserve">
+    <value>Бенчмарк</value>
+  </data>
+  <data name="Nav_Settings.Text" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="Rollback_PointLabel.Text" xml:space="preserve">
+    <value>Точка отката</value>
+  </data>
+  <data name="Rollback_CreatedToday.Text" xml:space="preserve">
+    <value>создана сегодня</value>
+  </data>
+  <data name="Section_TweaksTitleDefault.Text" xml:space="preserve">
+    <value>Твики системы</value>
+  </data>
+  <data name="Logs_Empty.Text" xml:space="preserve">
+    <value>Пока нет ни одной операции. Здесь появится журнал apply/rollback.</value>
+  </data>
+  <data name="Analysis_Overview.Text" xml:space="preserve">
+    <value>Обзор системы</value>
+  </data>
+  <data name="Analysis_SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Поиск (например: GPU, диск, TPM)...</value>
+  </data>
+  <data name="Analysis_LegendOk.Text" xml:space="preserve">
+    <value>Всё в порядке</value>
+  </data>
+  <data name="Analysis_LegendWarning.Text" xml:space="preserve">
+    <value>Стоит обратить внимание</value>
+  </data>
+  <data name="Analysis_LegendUnknown.Text" xml:space="preserve">
+    <value>Не удалось определить</value>
+  </data>
+  <data name="Analysis_Loading.Text" xml:space="preserve">
+    <value>Собираю информацию о системе (может занять пару секунд)…</value>
+  </data>
+  <data name="Analysis_NoAdminWarning.Text" xml:space="preserve">
+    <value>PSuite запущен без прав администратора: Secure Boot, BitLocker, Test Mode и Kernel Debug определить не получится. Перезапусти PSuite от имени администратора для полной картины.</value>
+  </data>
+  <data name="Benchmark_Title.Text" xml:space="preserve">
+    <value>Быстрый бенчмарк</value>
+  </data>
+  <data name="Benchmark_Desc.Text" xml:space="preserve">
+    <value>9 тестов: CPU, память, диск, сеть, GPU + тест стабильности. Первый запуск = 1000 очков — дальше сравнение с ним, не с другими ПК.</value>
+  </data>
+  <data name="Benchmark_RecordBadge.Text" xml:space="preserve">
+    <value>&#x1F3C6; Новый рекорд производительности!</value>
+  </data>
+</root>

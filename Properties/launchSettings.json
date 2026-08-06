@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PSuite (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PSuite (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

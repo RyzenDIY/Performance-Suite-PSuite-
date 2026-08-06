@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Settings_Language_Title.Text" xml:space="preserve">
+    <value>Interface language</value>
+  </data>
+  <data name="Settings_Language_Desc.Text" xml:space="preserve">
+    <value>Takes effect after restarting PSuite (tap a language — I'll offer to restart).</value>
+  </data>
+  <data name="Settings_Language_Uk.Content" xml:space="preserve">
+    <value>Ukrainian</value>
+  </data>
+  <data name="Settings_Language_Ru.Content" xml:space="preserve">
+    <value>Russian</value>
+  </data>
+  <data name="Settings_Language_En.Content" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Settings_Experimental_Title.Text" xml:space="preserve">
+    <value>Show Experimental tweaks</value>
+  </data>
+  <data name="Settings_Experimental_Desc.Text" xml:space="preserve">
+    <value>Tweaks with unpredictable behavior across different Windows builds.</value>
+  </data>
+  <data name="Settings_ToggleSwitch.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="Settings_ToggleSwitch.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Settings_Startup_Title.Text" xml:space="preserve">
+    <value>Launch PSuite with Windows</value>
+  </data>
+  <data name="Settings_Startup_Desc.Text" xml:space="preserve">
+    <value>Adds PSuite to Windows startup via the official StartupTask API — shows up in Task Manager → Startup apps. Doesn't need admin rights.</value>
+  </data>
+  <data name="Settings_RestorePoint_Title.Text" xml:space="preserve">
+    <value>Restore point before applying a tweak</value>
+  </data>
+  <data name="Settings_RestorePoint_Desc.Text" xml:space="preserve">
+    <value>A real Windows restore point (Checkpoint-Computer). Requires System Protection enabled for drive C:. Windows itself limits restore points to about once per 24 hours.</value>
+  </data>
+  <data name="Settings_CreateRestorePointNow.Content" xml:space="preserve">
+    <value>Create restore point now</value>
+  </data>
+  <data name="Settings_ModulesFolder_Title.Text" xml:space="preserve">
+    <value>Modules folder</value>
+  </data>
+  <data name="Settings_OpenFolder.Content" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="Settings_Import_Title.Text" xml:space="preserve">
+    <value>Import module</value>
+  </data>
+  <data name="Settings_Import_Desc.Text" xml:space="preserve">
+    <value>Add a tweak module from a folder or a .zip archive.</value>
+  </data>
+  <data name="Settings_ImportFromFolder.Content" xml:space="preserve">
+    <value>From folder</value>
+  </data>
+  <data name="Settings_ImportFromZip.Content" xml:space="preserve">
+    <value>From .zip</value>
+  </data>
+  <data name="Settings_AiPrompt_Title.Text" xml:space="preserve">
+    <value>AI prompt</value>
+  </data>
+  <data name="Settings_AiPrompt_Desc.Text" xml:space="preserve">
+    <value>Full instructions for the PSuite module format — works with any model (ChatGPT, Claude, Codex).</value>
+  </data>
+  <data name="Settings_CopyPrompt.Content" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Settings_LogExport_Title.Text" xml:space="preserve">
+    <value>Operations log</value>
+  </data>
+  <data name="Settings_LogExport_Desc.Text" xml:space="preserve">
+    <value>Save a readable text log file to attach to a bug report.</value>
+  </data>
+  <data name="Settings_ExportLogs.Content" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="Settings_BenchmarkBaseline_Title.Text" xml:space="preserve">
+    <value>Benchmark baseline</value>
+  </data>
+  <data name="Settings_BenchmarkBaseline_Desc.Text" xml:space="preserve">
+    <value>Performance Score is measured relative to the first benchmark run. Reset it if you changed hardware — otherwise the score compares different systems.</value>
+  </data>
+  <data name="Settings_ResetBaseline.Content" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Settings_AccentColor_Title.Text" xml:space="preserve">
+    <value>Accent color</value>
+  </data>
+  <data name="Settings_AccentColor_Desc.Text" xml:space="preserve">
+    <value>Changes button highlights, the active tab, and benchmark better/worse coloring across the app.</value>
+  </data>
+  <data name="Settings_AccentGreen.Content" xml:space="preserve">
+    <value>Green</value>
+  </data>
+  <data name="Settings_AccentRed.Content" xml:space="preserve">
+    <value>Red</value>
+  </data>
+  <data name="Settings_AccentYellow.Content" xml:space="preserve">
+    <value>Yellow</value>
+  </data>
+  <data name="Settings_AccentBlue.Content" xml:space="preserve">
+    <value>Blue</value>
+  </data>
+  <data name="Settings_AccentPurple.Content" xml:space="preserve">
+    <value>Purple</value>
+  </data>
+  <data name="Settings_CustomPalette.Header" xml:space="preserve">
+    <value>Custom palette</value>
+  </data>
+  <data name="Settings_ColorFilter_Title.Text" xml:space="preserve">
+    <value>Screen colors (experimental)</value>
+  </data>
+  <data name="Settings_ColorFilter_Desc.Text" xml:space="preserve">
+    <value>Screen-wide brightness / contrast / gamma via the Windows Gamma Ramp API — like Night Light, but manually tunable. Affects the whole screen, not just a game, and resets on reboot.</value>
+  </data>
+  <data name="Settings_ColorFilter_Brightness.Text" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="Settings_ColorFilter_Contrast.Text" xml:space="preserve">
+    <value>Contrast</value>
+  </data>
+  <data name="Settings_ColorFilter_Gamma.Text" xml:space="preserve">
+    <value>Gamma</value>
+  </data>
+  <data name="Settings_ColorFilter_Reset.Content" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="Settings_ColorFilter_Limitation.Text" xml:space="preserve">
+    <value>Honestly: this is NOT saturation and NOT sharpness (like NVIDIA Freestyle) — that needs access to a specific game's renderer (hooking DirectX), a task of a different scale entirely. This is only what's genuinely possible system-wide: screen brightness/contrast/gamma.</value>
+  </data>
+  <data name="Splash_Loading.Text" xml:space="preserve">
+    <value>Loading modules...</value>
+  </data>
+  <data name="Nav_Tweaks.Text" xml:space="preserve">
+    <value>Tweaks</value>
+  </data>
+  <data name="Nav_Analysis.Text" xml:space="preserve">
+    <value>Analysis</value>
+  </data>
+  <data name="Nav_Rollback.Text" xml:space="preserve">
+    <value>Rollback</value>
+  </data>
+  <data name="Nav_Logs.Text" xml:space="preserve">
+    <value>Logs</value>
+  </data>
+  <data name="Nav_Benchmark.Text" xml:space="preserve">
+    <value>Benchmark</value>
+  </data>
+  <data name="Nav_Settings.Text" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Rollback_PointLabel.Text" xml:space="preserve">
+    <value>Restore point</value>
+  </data>
+  <data name="Rollback_CreatedToday.Text" xml:space="preserve">
+    <value>created today</value>
+  </data>
+  <data name="Section_TweaksTitleDefault.Text" xml:space="preserve">
+    <value>System tweaks</value>
+  </data>
+  <data name="Logs_Empty.Text" xml:space="preserve">
+    <value>No operations yet. The apply/rollback log will appear here.</value>
+  </data>
+  <data name="Analysis_Overview.Text" xml:space="preserve">
+    <value>System overview</value>
+  </data>
+  <data name="Analysis_SearchBox.PlaceholderText" xml:space="preserve">
+    <value>Search (e.g. GPU, disk, TPM)...</value>
+  </data>
+  <data name="Analysis_LegendOk.Text" xml:space="preserve">
+    <value>All good</value>
+  </data>
+  <data name="Analysis_LegendWarning.Text" xml:space="preserve">
+    <value>Worth a look</value>
+  </data>
+  <data name="Analysis_LegendUnknown.Text" xml:space="preserve">
+    <value>Couldn't determine</value>
+  </data>
+  <data name="Analysis_Loading.Text" xml:space="preserve">
+    <value>Gathering system information (may take a few seconds)…</value>
+  </data>
+  <data name="Analysis_NoAdminWarning.Text" xml:space="preserve">
+    <value>PSuite is running without administrator rights: Secure Boot, BitLocker, Test Mode and Kernel Debug can't be detected. Restart PSuite as administrator for the full picture.</value>
+  </data>
+  <data name="Benchmark_Title.Text" xml:space="preserve">
+    <value>Quick benchmark</value>
+  </data>
+  <data name="Benchmark_Desc.Text" xml:space="preserve">
+    <value>9 tests: CPU, memory, disk, network, GPU + stability test. First run = 1000 points — everything after is compared to it, not to other PCs.</value>
+  </data>
+  <data name="Benchmark_RecordBadge.Text" xml:space="preserve">
+    <value>&#x1F3C6; New performance record!</value>
+  </data>
+</root>

@@ -1,0 +1,24 @@
+{
+  "id": "diag-tracking-disable",
+  "name": "Отключение диагностического трекинга (демо)",
+  "description": "Проверяет apply/rollback. Настройки системы не меняет.",
+  "author": "RyzenDIY",
+  "version": "1.0.0",
+  "category": "System",
+  "risk": "Safe",
+  "requiresAdmin": false,
+  "supportsRollback": true,
+  "requiresRestart": false,
+  "engine": "Script",
+  "entry": {
+    "detect": "detect.bat",
+    "apply": "apply.bat",
+    "rollback": "rollback.bat"
+  },
+  "compatibility": {
+    "supportedWindows": [{ "min": "10.0.17763", "max": null }],
+    "notes": "Демо-модуль, безопасен на любой системе."
+  },
+  "knownSideEffects": [],
+  "expectedEffect": "Нет измеримого эффекта — это тестовый модуль механизма apply/rollback."
+}

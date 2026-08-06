@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Source>C:\Users\Ryzen and RX\source\repos\PSuite\PSuite\Assets\AppLogo.png</Source>
+    <SmallTileSource>C:\Users\Ryzen and RX\source\repos\PSuite\PSuite\Assets\AppLogo.png</SmallTileSource>
+    <MediumTileSource>C:\Users\Ryzen and RX\source\repos\PSuite\PSuite\Assets\AppLogo.png</MediumTileSource>
+    <WideTileSource>C:\Users\Ryzen and RX\source\repos\PSuite\PSuite\Assets\AppLogo.png</WideTileSource>
+    <LargeTileSource>C:\Users\Ryzen and RX\source\repos\PSuite\PSuite\Assets\AppLogo.png</LargeTileSource>
+    <AppIconSource>C:\Users\Ryzen and RX\source\repos\PSuite\PSuite\Assets\AppLogo.png</AppIconSource>
+    <SplashScreenSource>C:\Users\Ryzen and RX\source\repos\PSuite\PSuite\Assets\AppLogo.png</SplashScreenSource>
+    <PackageLogoSource>C:\Users\Ryzen and RX\source\repos\PSuite\PSuite\Assets\AppLogo.png</PackageLogoSource>
+    <ActiveDebugProfile>PSuite (Package)</ActiveDebugProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Update="App.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </None>
+    <None Update="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+</Project>

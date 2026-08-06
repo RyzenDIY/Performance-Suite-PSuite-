@@ -1,0 +1,913 @@
+<Window
+    x:Class="PSuite.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PSuite"
+    xmlns:models="using:PSuite.Models"
+    xmlns:converters="using:PSuite.Converters"
+    Title="PSuite">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop Kind="BaseAlt" />
+    </Window.SystemBackdrop>
+
+    <Grid x:Name="RootGrid" Background="{StaticResource PSuiteBackgroundBrush}">
+        <Grid.Resources>
+            <converters:RiskToBrushConverter x:Key="RiskToBrushConverter" />
+            <converters:BoolNegationConverter x:Key="NegateBoolConverter" />
+
+            <Style x:Key="PSuiteToolTipStyle" TargetType="ToolTip">
+                <Setter Property="Background" Value="{StaticResource PSuiteSurfaceRaisedBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource PSuiteBorderBrush}" />
+                <Setter Property="BorderThickness" Value="0.5" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="Padding" Value="12,9" />
+                <Setter Property="MaxWidth" Value="260" />
+                <Setter Property="Foreground" Value="{StaticResource PSuiteTextPrimaryBrush}" />
+                <Setter Property="FontSize" Value="12" />
+            </Style>
+
+            <DataTemplate x:Key="TweakTileTemplate">
+                <Border
+                    Width="216" Height="168"
+                    CornerRadius="12"
+                    Background="{StaticResource PSuiteSurfaceBrush}"
+                    BorderBrush="{StaticResource PSuiteBorderBrush}"
+                    BorderThickness="0.5"
+                    Padding="16,14,16,12"
+                    Margin="0,0,12,12"
+                    RenderTransformOrigin="0.5,0.5"
+                    PointerEntered="OnTweakCardPointerEntered"
+                    PointerExited="OnTweakCardPointerExited">
+                    <ToolTipService.ToolTip>
+                        <ToolTip Content="{Binding Description}" Style="{StaticResource PSuiteToolTipStyle}" />
+                    </ToolTipService.ToolTip>
+                    <Border.RenderTransform>
+                        <ScaleTransform ScaleX="1" ScaleY="1" />
+                    </Border.RenderTransform>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border
+                                Grid.Column="0"
+                                Width="34" Height="34"
+                                CornerRadius="8"
+                                Background="{StaticResource PSuiteSurfaceRaisedBrush}">
+                                <FontIcon
+                                    Glyph="{Binding IconGlyph}"
+                                    FontFamily="Segoe Fluent Icons"
+                                    FontSize="16"
+                                    Foreground="{StaticResource PSuiteAccentTealLightBrush}" />
+                            </Border>
+
+                            <Border
+                                Grid.Column="2"
+                                CornerRadius="20"
+                                Padding="8,3"
+                                VerticalAlignment="Top"
+                                BorderThickness="0.5"
+                                Background="{Binding Risk, Converter={StaticResource RiskToBrushConverter}, ConverterParameter=Bg}"
+                                BorderBrush="{Binding Risk, Converter={StaticResource RiskToBrushConverter}, ConverterParameter=Border}">
+                                <TextBlock
+                                    Text="{Binding RiskLabel}"
+                                    FontSize="11"
+                                    Foreground="{Binding Risk, Converter={StaticResource RiskToBrushConverter}, ConverterParameter=Fg}" />
+                            </Border>
+                        </Grid>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Text="{Binding Title}"
+                            Margin="0,10,0,0"
+                            FontSize="13.5"
+                            FontWeight="SemiBold"
+                            TextWrapping="Wrap"
+                            MaxLines="2"
+                            Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Text="{Binding Description}"
+                            Margin="0,4,0,0"
+                            FontSize="11.5"
+                            TextWrapping="Wrap"
+                            TextTrimming="CharacterEllipsis"
+                            MaxLines="2"
+                            Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+
+                        <Button
+                            Grid.Row="3"
+                            HorizontalAlignment="Stretch"
+                            Margin="0,10,0,0"
+                            Content="{Binding ActionButtonText}"
+                            IsEnabled="{Binding IsActionEnabled}"
+                            Click="OnTweakActionClick"
+                            Tag="{Binding}" />
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </Grid.Resources>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Splash overlay: NOT a separate Window (that would add real
+             multi-window activation risk) — just an opaque layer drawn on
+             top of the already-built RootGrid via Canvas.ZIndex, faded out
+             in code-behind once startup genuinely finishes. If anything
+             here ever throws, MainWindow_OnLoaded's try/catch hides it
+             immediately rather than leaving the app stuck behind it. -->
+        <Border x:Name="SplashOverlay"
+                Grid.Column="0" Grid.ColumnSpan="2"
+                Canvas.ZIndex="1000"
+                Background="{StaticResource PSuiteBackgroundBrush}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="18">
+                <Image Source="/Assets/Square150x150Logo.scale-200.png" Width="112" Height="112" />
+                <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="SemiBold">
+                    <Run Text="PS" Foreground="{StaticResource PSuiteTextPrimaryBrush}" /><Run Text="uite" Foreground="{StaticResource PSuiteAccentTealLightBrush}" />
+                </TextBlock>
+                <ProgressRing x:Name="SplashProgressRing" IsActive="True" Width="28" Height="28" />
+                <TextBlock x:Name="SplashStatusText" HorizontalAlignment="Center" FontSize="12.5"
+                           Foreground="{StaticResource PSuiteTextSecondaryBrush}" x:Uid="Splash_Loading" Text="Загрузка модулей..." />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Column="0" Background="{StaticResource PSuiteSurfaceBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Orientation="Horizontal" Margin="16,16,16,8" Spacing="8">
+                <Image Source="/Assets/AppLogo.png" Width="26" Height="26" />
+                <TextBlock VerticalAlignment="Center" FontSize="15">
+                    <Run Text="PS" Foreground="{StaticResource PSuiteTextPrimaryBrush}" FontWeight="SemiBold" /><Run Text="uite" Foreground="{StaticResource PSuiteAccentTealLightBrush}" FontWeight="SemiBold" />
+                </TextBlock>
+            </StackPanel>
+
+            <ListView x:Name="CategoryList" Grid.Row="1" Margin="8,8,8,0"
+                      SelectionMode="Single"
+                      SelectionChanged="OnCategoryChanged">
+                <ListViewItem Tag="All">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon x:Name="NavIconAll" Glyph="&#xE9A1;" FontFamily="Segoe Fluent Icons" FontSize="15" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                        <TextBlock x:Name="NavTextAll" x:Uid="Nav_Tweaks" Text="Твики" FontSize="13" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem Tag="Analyzer">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon x:Name="NavIconAnalyzer" Glyph="&#xE9D2;" FontFamily="Segoe Fluent Icons" FontSize="15" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                        <TextBlock x:Name="NavTextAnalyzer" x:Uid="Nav_Analysis" Text="Анализ" FontSize="13" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem Tag="Rollback">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon x:Name="NavIconRollback" Glyph="&#xE81C;" FontFamily="Segoe Fluent Icons" FontSize="15" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                        <TextBlock x:Name="NavTextRollback" x:Uid="Nav_Rollback" Text="Откат" FontSize="13" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem Tag="Logs">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon x:Name="NavIconLogs" Glyph="&#xE8A5;" FontFamily="Segoe Fluent Icons" FontSize="15" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                        <TextBlock x:Name="NavTextLogs" x:Uid="Nav_Logs" Text="Логи" FontSize="13" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem Tag="Benchmark">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon x:Name="NavIconBenchmark" Glyph="&#xE9D9;" FontFamily="Segoe Fluent Icons" FontSize="15" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                        <TextBlock x:Name="NavTextBenchmark" x:Uid="Nav_Benchmark" Text="Бенчмарк" FontSize="13" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                    </StackPanel>
+                </ListViewItem>
+                <ListViewItem Tag="Settings">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <FontIcon x:Name="NavIconSettings" Glyph="&#xE713;" FontFamily="Segoe Fluent Icons" FontSize="15" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                        <TextBlock x:Name="NavTextSettings" x:Uid="Nav_Settings" Text="Настройки" FontSize="13" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                    </StackPanel>
+                </ListViewItem>
+            </ListView>
+
+            <Border Grid.Row="2" Margin="10,10,10,14" Padding="10" CornerRadius="8"
+                    Background="{StaticResource PSuiteSurfaceRaisedBrush}"
+                    BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                <StackPanel Spacing="2">
+                    <TextBlock x:Uid="Rollback_PointLabel" Text="Точка отката" FontSize="11" Foreground="{StaticResource PSuiteTextMutedBrush}" />
+                    <TextBlock x:Uid="Rollback_CreatedToday" Text="создана сегодня" FontSize="12" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Column="1" Margin="24,20,24,20">
+            <Grid.ChildrenTransitions>
+                <TransitionCollection>
+                    <EntranceThemeTransition FromVerticalOffset="12" />
+                </TransitionCollection>
+            </Grid.ChildrenTransitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Spacing="2">
+                    <TextBlock x:Name="SectionTitleText" x:Uid="Section_TweaksTitleDefault" Text="Твики системы" FontSize="17" FontWeight="SemiBold"
+                               Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                    <TextBlock x:Name="SectionSubtitleText" Text="0 доступно"
+                               Foreground="{StaticResource PSuiteTextSecondaryBrush}" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="ClearLogsButton" Content="Очистить логи" Visibility="Collapsed" Click="OnClearLogsClick" />
+                    <Button x:Name="RefreshButton" Content="Обновить статус" Click="OnRefreshClick" />
+                </StackPanel>
+            </Grid>
+
+            <StackPanel x:Name="RiskFilterBar" Grid.Row="1" Orientation="Horizontal" Spacing="6" Margin="0,0,0,12" Visibility="Collapsed">
+                <Button x:Name="RiskFilterAllButton" Content="Все" Click="OnRiskFilterClick" Tag="All" />
+                <Button x:Name="RiskFilterSafeButton" Content="Safe" Click="OnRiskFilterClick" Tag="Safe" />
+                <Button x:Name="RiskFilterAdvancedButton" Content="Advanced" Click="OnRiskFilterClick" Tag="Advanced" />
+                <Button x:Name="RiskFilterExperimentalButton" Content="Experimental" Click="OnRiskFilterClick" Tag="Experimental" />
+                <Button x:Name="RiskFilterBlockedButton" Content="Blocked" Click="OnRiskFilterClick" Tag="Blocked" />
+            </StackPanel>
+
+            <Border x:Name="StatusBanner"
+                    Grid.Row="0"
+                    Margin="0,44,0,0"
+                    Padding="12,9"
+                    CornerRadius="8"
+                    HorizontalAlignment="Left"
+                    Visibility="Collapsed"
+                    RenderTransformOrigin="0,0.5">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="StatusBannerTranslate" Y="0" />
+                </Border.RenderTransform>
+                <Border.Transitions>
+                    <TransitionCollection>
+                        <EntranceThemeTransition FromVerticalOffset="-16" />
+                    </TransitionCollection>
+                </Border.Transitions>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <TextBlock x:Name="StatusBannerIcon" FontSize="13" VerticalAlignment="Center" />
+                    <TextBlock x:Name="StatusBannerText" FontSize="12" TextWrapping="Wrap" VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Auto" HorizontalScrollMode="Disabled">
+                <Grid>
+                    <GridView
+                        x:Name="TweaksGridView"
+                        ItemsSource="{Binding Tweaks}"
+                        ItemTemplate="{StaticResource TweakTileTemplate}"
+                        SelectionMode="None"
+                        IsItemClickEnabled="False"
+                        Padding="0,0,0,12">
+                        <GridView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsWrapGrid Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </GridView.ItemsPanel>
+                        <GridView.ItemContainerStyle>
+                            <Style TargetType="GridViewItem">
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </GridView.ItemContainerStyle>
+                        <GridView.ItemContainerTransitions>
+                            <TransitionCollection>
+                                <EntranceThemeTransition FromVerticalOffset="30" IsStaggeringEnabled="True" />
+                            </TransitionCollection>
+                        </GridView.ItemContainerTransitions>
+                    </GridView>
+
+                    <TextBlock x:Name="TweaksEmptyText"
+                               Visibility="Collapsed"
+                               FontSize="13" TextWrapping="Wrap" MaxWidth="420"
+                               Foreground="{StaticResource PSuiteTextSecondaryBrush}"
+                               HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+                    <Grid x:Name="LogsPlaceholder" Visibility="Collapsed">
+                    <UIElement.Transitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition FromVerticalOffset="16" />
+                        </TransitionCollection>
+                    </UIElement.Transitions>
+                        <TextBlock x:Name="LogsEmptyText"
+                                   x:Uid="Logs_Empty" Text="Пока нет ни одной операции. Здесь появится журнал apply/rollback."
+                                   FontSize="13" TextWrapping="Wrap" MaxWidth="420"
+                                   Foreground="{StaticResource PSuiteTextSecondaryBrush}"
+                                   HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+                        <ListView x:Name="LogsListView" SelectionMode="None" Visibility="Collapsed">
+                            <ListView.ItemContainerTransitions>
+                                <TransitionCollection>
+                                    <EntranceThemeTransition FromVerticalOffset="20" IsStaggeringEnabled="True" />
+                                </TransitionCollection>
+                            </ListView.ItemContainerTransitions>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models:LogEntryView">
+                                    <Border
+                                        Padding="12,10"
+                                        Margin="0,0,0,6"
+                                        CornerRadius="8"
+                                        Background="{StaticResource PSuiteSurfaceBrush}"
+                                        BorderBrush="{StaticResource PSuiteBorderBrush}"
+                                        BorderThickness="0.5">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <FontIcon Glyph="{x:Bind IconGlyph}" FontFamily="Segoe Fluent Icons" FontSize="15"
+                                                      Foreground="{StaticResource PSuiteAccentTealLightBrush}" />
+                                            <StackPanel Spacing="2">
+                                                <TextBlock Text="{x:Bind Title}" FontSize="13" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                                <TextBlock Text="{x:Bind Subtitle}" FontSize="11.5" Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+
+                <ScrollViewer x:Name="AnalyzerScrollViewer" Grid.Row="2" Visibility="Collapsed" HorizontalAlignment="Left">
+                    <UIElement.Transitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition FromVerticalOffset="16" />
+                        </TransitionCollection>
+                    </UIElement.Transitions>
+                    <StackPanel Width="900">
+                    <Border x:Name="SystemInfoPanel" Grid.Row="0" Visibility="Collapsed"
+                            Margin="0,0,0,16" Padding="16" CornerRadius="10"
+                            Background="{StaticResource PSuiteSurfaceBrush}"
+                            BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                        <StackPanel Spacing="10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" x:Uid="Analysis_Overview" Text="Обзор системы" FontSize="13.5" FontWeight="SemiBold"
+                                           Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                <TextBlock x:Name="SecurityScoreText" Grid.Column="1" FontSize="12.5" FontWeight="SemiBold"
+                                           Foreground="{StaticResource PSuiteAccentTealLightBrush}" />
+                            </Grid>
+
+                            <TextBox x:Name="AnalysisSearchBox"
+                                     x:Uid="Analysis_SearchBox" PlaceholderText="Поиск (например: GPU, диск, TPM)..."
+                                     TextChanged="OnAnalysisSearchChanged"
+                                     MaxWidth="320" HorizontalAlignment="Left" />
+
+                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <Ellipse Width="8" Height="8" Fill="{StaticResource PSuiteSuccessBrush}" />
+                                    <TextBlock x:Uid="Analysis_LegendOk" Text="Всё в порядке" FontSize="11" Foreground="{StaticResource PSuiteTextMutedBrush}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <Ellipse Width="8" Height="8" Fill="{StaticResource PSuiteStatusAdvancedFgBrush}" />
+                                    <TextBlock x:Uid="Analysis_LegendWarning" Text="Стоит обратить внимание" FontSize="11" Foreground="{StaticResource PSuiteTextMutedBrush}" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <Ellipse Width="8" Height="8" Fill="{StaticResource PSuiteAnalysisUnknownBrush}" />
+                                    <TextBlock x:Uid="Analysis_LegendUnknown" Text="Не удалось определить" FontSize="11" Foreground="{StaticResource PSuiteTextMutedBrush}" />
+                                </StackPanel>
+                            </StackPanel>
+    
+                            <TextBlock x:Name="SystemInfoLoadingText" x:Uid="Analysis_Loading" Text="Собираю информацию о системе (может занять пару секунд)…"
+                                       FontSize="12" Visibility="Collapsed"
+                                       Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+    
+                            <Border x:Name="ElevationWarningBanner" Visibility="Collapsed"
+                                    Padding="10,8" CornerRadius="6"
+                                    Background="{StaticResource PSuiteStatusAdvancedBgBrush}"
+                                    BorderBrush="{StaticResource PSuiteStatusAdvancedBorderBrush}" BorderThickness="0.5">
+                                <TextBlock TextWrapping="Wrap" FontSize="11.5"
+                                           Foreground="{StaticResource PSuiteStatusAdvancedFgBrush}"
+                                           x:Uid="Analysis_NoAdminWarning" Text="PSuite запущен без прав администратора: Secure Boot, BitLocker, Test Mode и Kernel Debug определить не получится. Перезапусти PSuite от имени администратора для полной картины." />
+                            </Border>
+    
+                            <Grid x:Name="AnalysisCardsGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel x:Name="AnalysisColumn0" Grid.Column="0" Spacing="12" Margin="0,0,12,0">
+                                    <StackPanel.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="20" IsStaggeringEnabled="True" />
+                                        </TransitionCollection>
+                                    </StackPanel.ChildrenTransitions>
+                                </StackPanel>
+                                <StackPanel x:Name="AnalysisColumn1" Grid.Column="1" Spacing="12" Margin="0,0,12,0">
+                                    <StackPanel.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="20" IsStaggeringEnabled="True" />
+                                        </TransitionCollection>
+                                    </StackPanel.ChildrenTransitions>
+                                </StackPanel>
+                                <StackPanel x:Name="AnalysisColumn2" Grid.Column="2" Spacing="12">
+                                    <StackPanel.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="20" IsStaggeringEnabled="True" />
+                                        </TransitionCollection>
+                                    </StackPanel.ChildrenTransitions>
+                                </StackPanel>
+                            </Grid>
+    
+                            <ItemsControl x:Name="SysRecommendationsList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <TextBlock Text="{x:Bind}" FontSize="11.5" TextWrapping="Wrap"
+                                                   Margin="0,2,0,0"
+                                                   Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ScrollViewer x:Name="SettingsScrollViewer" Grid.Row="2" Visibility="Collapsed" HorizontalAlignment="Left">
+                    <UIElement.Transitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition FromVerticalOffset="16" />
+                        </TransitionCollection>
+                    </UIElement.Transitions>
+                    <StackPanel x:Name="SettingsPanel" Spacing="14" Width="420">
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <StackPanel Spacing="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                        <TextBlock x:Uid="Settings_Language_Title" Text="Язык интерфейса"
+                                                   FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock x:Uid="Settings_Language_Desc" Text="Применится после перезапуска PSuite (нажми на язык — предложу перезапустить)."
+                                                   FontSize="11.5" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                    </StackPanel>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button x:Name="LanguageUkButton" x:Uid="Settings_Language_Uk" Content="Українська" Tag="uk" Click="OnLanguageClick" />
+                                    <Button x:Name="LanguageRuButton" x:Uid="Settings_Language_Ru" Content="Русский" Tag="ru" Click="OnLanguageClick" />
+                                    <Button x:Name="LanguageEnButton" x:Uid="Settings_Language_En" Content="English" Tag="en" Click="OnLanguageClick" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                    <TextBlock x:Uid="Settings_Experimental_Title" Text="Показывать Experimental твики"
+                                               FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock x:Uid="Settings_Experimental_Desc" Text="Твики с неопределённым поведением на разных сборках Windows."
+                                               FontSize="11.5" TextWrapping="Wrap"
+                                               Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    x:Name="ShowExperimentalToggle"
+                                    x:Uid="Settings_ToggleSwitch"
+                                    OnContent="Вкл"
+                                    OffContent="Выкл"
+                                    MinWidth="80"
+                                    VerticalAlignment="Center"
+                                    Toggled="OnShowExperimentalToggled" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                    <TextBlock x:Uid="Settings_Startup_Title" Text="Запускать PSuite вместе с Windows"
+                                               FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock x:Uid="Settings_Startup_Desc" Text="Добавляет PSuite в автозагрузку Windows через официальный StartupTask API — появится в Диспетчере задач → Автозагрузка. Прав администратора не требует."
+                                               FontSize="11.5" TextWrapping="Wrap"
+                                               Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                </StackPanel>
+
+                                <ToggleSwitch
+                                    Grid.Column="1"
+                                    x:Name="LaunchOnStartupToggle"
+                                    x:Uid="Settings_ToggleSwitch"
+                                    OnContent="Вкл"
+                                    OffContent="Выкл"
+                                    MinWidth="80"
+                                    VerticalAlignment="Center"
+                                    Toggled="OnLaunchOnStartupToggled" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <StackPanel Spacing="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                        <TextBlock x:Uid="Settings_RestorePoint_Title" Text="Точка восстановления перед применением твика"
+                                                   FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock x:Uid="Settings_RestorePoint_Desc" Text="Настоящая точка восстановления Windows (Checkpoint-Computer). Требует включённой защиты системы для диска C:. Windows сама ограничивает создание точек — не чаще раза в 24 часа."
+                                                   FontSize="11.5" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                    </StackPanel>
+
+                                    <ToggleSwitch
+                                        Grid.Column="1"
+                                        x:Name="RestorePointBeforeApplyToggle"
+                                        x:Uid="Settings_ToggleSwitch"
+                                        OnContent="Вкл"
+                                        OffContent="Выкл"
+                                        MinWidth="80"
+                                        VerticalAlignment="Center"
+                                        Toggled="OnRestorePointBeforeApplyToggled" />
+                                </Grid>
+
+                                <Button x:Name="CreateRestorePointNowButton"
+                                        x:Uid="Settings_CreateRestorePointNow"
+                                        Content="Создать точку восстановления сейчас"
+                                        Click="OnCreateRestorePointNowClick"
+                                        HorizontalAlignment="Left" />
+                            </StackPanel>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                    <TextBlock x:Uid="Settings_ModulesFolder_Title" Text="Папка модулей"
+                                               FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                    <TextBlock x:Name="ModulesPathText" Text=""
+                                               FontSize="11.5" TextWrapping="Wrap"
+                                               Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                </StackPanel>
+
+                                <Button Grid.Column="1" x:Uid="Settings_OpenFolder" Content="Открыть" VerticalAlignment="Center"
+                                        Click="OnOpenModulesFolderClick" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                    <TextBlock x:Uid="Settings_Import_Title" Text="Импорт модуля"
+                                               FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                    <TextBlock x:Uid="Settings_Import_Desc" Text="Добавить твик-модуль из папки или .zip архива."
+                                               FontSize="11.5" TextWrapping="Wrap"
+                                               Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                </StackPanel>
+
+                                <Button Grid.Column="1" x:Uid="Settings_ImportFromFolder" Content="Из папки" VerticalAlignment="Center" Margin="0,0,8,0"
+                                        Click="OnImportFolderClick" />
+                                <Button Grid.Column="2" x:Uid="Settings_ImportFromZip" Content="Из .zip" VerticalAlignment="Center"
+                                        Click="OnImportZipClick" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                    <TextBlock x:Uid="Settings_AiPrompt_Title" Text="Промт для ИИ"
+                                               FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                    <TextBlock x:Uid="Settings_AiPrompt_Desc" Text="Полная инструкция по формату модуля PSuite — подходит для любой модели (ChatGPT, Claude, Codex)."
+                                               FontSize="11.5" TextWrapping="Wrap"
+                                               Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                </StackPanel>
+
+                                <Button Grid.Column="1" x:Uid="Settings_CopyPrompt" Content="Скопировать" VerticalAlignment="Center"
+                                        Click="OnCopyPromptClick" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                    <TextBlock x:Uid="Settings_LogExport_Title" Text="Журнал операций"
+                                               FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                    <TextBlock x:Uid="Settings_LogExport_Desc" Text="Сохранить читаемый текстовый файл журнала для отправки при баг-репорте."
+                                               FontSize="11.5" TextWrapping="Wrap"
+                                               Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                </StackPanel>
+
+                                <Button Grid.Column="1" x:Uid="Settings_ExportLogs" Content="Экспортировать" VerticalAlignment="Center"
+                                        Click="OnExportLogsClick" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                    <TextBlock x:Uid="Settings_BenchmarkBaseline_Title" Text="Базовый замер бенчмарка"
+                                               FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                    <TextBlock x:Uid="Settings_BenchmarkBaseline_Desc" Text="Performance Score считается относительно первого запуска бенчмарка. Сбрось, если поменял железо — иначе счёт будет сравнивать разные системы."
+                                               FontSize="11.5" TextWrapping="Wrap"
+                                               Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                </StackPanel>
+
+                                <Button Grid.Column="1" x:Uid="Settings_ResetBaseline" Content="Сбросить" VerticalAlignment="Center"
+                                        Click="OnResetBenchmarkBaselineClick" />
+                            </Grid>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <StackPanel Spacing="10">
+                                <TextBlock x:Uid="Settings_AccentColor_Title" Text="Цвет акцента"
+                                           FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                <TextBlock x:Uid="Settings_AccentColor_Desc" Text="Меняет подсветку кнопок, активной вкладки и «лучше/хуже» в бенчмарке по всему приложению."
+                                           FontSize="11.5" TextWrapping="Wrap"
+                                           Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                <StackPanel Spacing="8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button x:Name="AccentGreenButton" x:Uid="Settings_AccentGreen" Content="Зелёный" Tag="#FF1D9E75" Click="OnAccentColorClick" />
+                                        <Button x:Name="AccentRedButton" x:Uid="Settings_AccentRed" Content="Красный" Tag="#FFC0392B" Click="OnAccentColorClick" />
+                                        <Button x:Name="AccentYellowButton" x:Uid="Settings_AccentYellow" Content="Жёлтый" Tag="#FFC98A1E" Click="OnAccentColorClick" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button x:Name="AccentBlueButton" x:Uid="Settings_AccentBlue" Content="Синий" Tag="#FF2E7BD6" Click="OnAccentColorClick" />
+                                        <Button x:Name="AccentPurpleButton" x:Uid="Settings_AccentPurple" Content="Фиолетовый" Tag="#FF8250C8" Click="OnAccentColorClick" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <Expander x:Uid="Settings_CustomPalette" Header="Своя палитра" HorizontalContentAlignment="Stretch">
+                                    <ColorPicker x:Name="AccentColorPicker"
+                                                 ColorSpectrumShape="Ring"
+                                                 IsAlphaEnabled="False"
+                                                 IsMoreButtonVisible="False"
+                                                 ColorChanged="OnAccentColorPickerChanged" />
+                                </Expander>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Padding="16" CornerRadius="10"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <StackPanel Spacing="12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Spacing="3" Margin="0,0,16,0">
+                                        <TextBlock x:Uid="Settings_ColorFilter_Title" Text="Цвета экрана (эксперимент)"
+                                                   FontSize="13.5" Foreground="{StaticResource PSuiteTextPrimaryBrush}"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock x:Uid="Settings_ColorFilter_Desc"
+                                                   Text="Яркость / контраст / гамма всего экрана через Windows Gamma Ramp API — как Night Light, но настраиваемо вручную. Действует на весь экран, не только на игру, и сбрасывается после перезагрузки."
+                                                   FontSize="11.5" TextWrapping="Wrap"
+                                                   Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                    </StackPanel>
+
+                                    <ToggleSwitch
+                                        Grid.Column="1"
+                                        x:Name="ColorFilterToggle"
+                                        x:Uid="Settings_ToggleSwitch"
+                                        OnContent="Вкл"
+                                        OffContent="Выкл"
+                                        MinWidth="80"
+                                        VerticalAlignment="Center"
+                                        Toggled="OnColorFilterToggled" />
+                                </Grid>
+
+                                <StackPanel Spacing="10">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="44" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock x:Uid="Settings_ColorFilter_Brightness" Text="Яркость" FontSize="12"
+                                                   VerticalAlignment="Center" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                        <Slider Grid.Column="1" x:Name="ColorBrightnessSlider"
+                                                Minimum="-100" Maximum="100" StepFrequency="1"
+                                                ValueChanged="OnColorFilterSliderChanged" />
+                                        <TextBlock Grid.Column="2" x:Name="ColorBrightnessValueText" Text="0" FontSize="12"
+                                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                    </Grid>
+
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="44" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock x:Uid="Settings_ColorFilter_Contrast" Text="Контраст" FontSize="12"
+                                                   VerticalAlignment="Center" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                        <Slider Grid.Column="1" x:Name="ColorContrastSlider"
+                                                Minimum="50" Maximum="200" StepFrequency="1"
+                                                ValueChanged="OnColorFilterSliderChanged" />
+                                        <TextBlock Grid.Column="2" x:Name="ColorContrastValueText" Text="100%" FontSize="12"
+                                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                    </Grid>
+
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="44" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock x:Uid="Settings_ColorFilter_Gamma" Text="Гамма" FontSize="12"
+                                                   VerticalAlignment="Center" Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                        <Slider Grid.Column="1" x:Name="ColorGammaSlider"
+                                                Minimum="0.5" Maximum="2.5" StepFrequency="0.05"
+                                                ValueChanged="OnColorFilterSliderChanged" />
+                                        <TextBlock Grid.Column="2" x:Name="ColorGammaValueText" Text="1.00" FontSize="12"
+                                                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                    </Grid>
+
+                                    <Button x:Name="ColorFilterResetButton" x:Uid="Settings_ColorFilter_Reset"
+                                            Content="Сбросить" Click="OnColorFilterResetClick"
+                                            HorizontalAlignment="Left" />
+                                </StackPanel>
+
+                                <TextBlock x:Uid="Settings_ColorFilter_Limitation"
+                                           Text="Честно: это НЕ насыщенность и НЕ резкость (как в NVIDIA Freestyle) — для этого нужен доступ к рендеру конкретной игры (перехват DirectX), это другая по масштабу задача. Здесь — только то, что реально можно сделать системно: яркость/контраст/гамма всего экрана."
+                                           FontSize="10.5" TextWrapping="Wrap" FontStyle="Italic"
+                                           Foreground="{StaticResource PSuiteTextMutedBrush}" />
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock x:Name="VersionText" Text="PSuite" FontSize="11"
+                                   Foreground="{StaticResource PSuiteTextMutedBrush}" Margin="4,4,0,4" />
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ScrollViewer x:Name="BenchmarkScrollViewer" Grid.Row="2" Visibility="Collapsed" HorizontalAlignment="Stretch">
+                    <UIElement.Transitions>
+                        <TransitionCollection>
+                            <EntranceThemeTransition FromVerticalOffset="16" />
+                        </TransitionCollection>
+                    </UIElement.Transitions>
+                    <StackPanel Spacing="14">
+                        <Border Padding="16" CornerRadius="10" MaxWidth="640" HorizontalAlignment="Left"
+                                Background="{StaticResource PSuiteSurfaceBrush}"
+                                BorderBrush="{StaticResource PSuiteBorderBrush}" BorderThickness="0.5">
+                            <StackPanel Spacing="10">
+                                <TextBlock x:Uid="Benchmark_Title" Text="Быстрый бенчмарк" FontSize="13.5" FontWeight="SemiBold"
+                                           Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                                <TextBlock x:Uid="Benchmark_Desc" Text="9 тестов: CPU, память, диск, сеть, GPU + тест стабильности. Первый запуск = 1000 очков — дальше сравнение с ним, не с другими ПК."
+                                           FontSize="11.5" TextWrapping="Wrap"
+                                           Foreground="{StaticResource PSuiteTextSecondaryBrush}" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Grid>
+                                        <Button x:Name="RunBenchmarkButton" Content="Запустить" Click="OnRunBenchmarkClick" />
+                                        <ProgressRing x:Name="BenchmarkProgressRing"
+                                                      Width="18" Height="18"
+                                                      Margin="0,0,10,0"
+                                                      HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                      IsIndeterminate="False" Minimum="0" Maximum="100" Value="0"
+                                                      Visibility="Collapsed" />
+                                    </Grid>
+                                    <Button x:Name="RunStabilityButton" Content="Тест стабильности (15 сек)" Click="OnRunStabilityClick"
+                                            ToolTipService.ToolTip="Грузит все ядра CPU и (если доступно) GPU ~15 секунд, разбивая нагрузку на короткие окна — если производительность заметно проседает от окна к окну, это троттлинг, а не догадка." />
+                                    <Button x:Name="RunSpeedTestButton" Content="Speed-тест интернета" Click="OnRunSpeedTestClick"
+                                            ToolTipService.ToolTip="Открытый LibreSpeed CLI. Отдельно от остальных тестов, потому что отправляет данные на внешний сервер — спросит подтверждение перед запуском." />
+                                </StackPanel>
+
+                                <TextBlock x:Name="SpeedTestResultText" FontSize="12.5" TextWrapping="Wrap"
+                                           Visibility="Collapsed"
+                                           Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+
+                                <TextBlock x:Name="StabilityResultText" FontSize="12.5" TextWrapping="Wrap"
+                                           Visibility="Collapsed"
+                                           Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+
+                                <TextBlock x:Name="BenchmarkScoreText" FontSize="22" FontWeight="Bold"
+                                           Visibility="Collapsed"
+                                           RenderTransformOrigin="0.5,0.5"
+                                           Foreground="{StaticResource PSuiteAccentTealLightBrush}" />
+                                <TextBlock x:Name="BenchmarkRecordBadge" x:Uid="Benchmark_RecordBadge" Text="&#x1F3C6; Новый рекорд производительности!"
+                                           FontSize="12" FontWeight="SemiBold"
+                                           Visibility="Collapsed"
+                                           Foreground="{StaticResource PSuiteAccentTealLightBrush}" />
+                                <TextBlock x:Name="BenchmarkScoreSubtitleText" FontSize="11" TextWrapping="Wrap"
+                                           Visibility="Collapsed"
+                                           Foreground="{StaticResource PSuiteTextMutedBrush}" />
+                                <TextBlock x:Name="BenchmarkVerdictText" FontSize="12.5" FontWeight="SemiBold" TextWrapping="Wrap"
+                                           Visibility="Collapsed"
+                                           Foreground="{StaticResource PSuiteTextPrimaryBrush}" />
+                            </StackPanel>
+                        </Border>
+
+                        <Grid x:Name="BenchmarkCardsGrid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel x:Name="BenchmarkColumn0" Grid.Column="0" Spacing="12" Margin="0,0,12,0">
+                                    <StackPanel.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="20" IsStaggeringEnabled="True" />
+                                        </TransitionCollection>
+                                    </StackPanel.ChildrenTransitions>
+                                </StackPanel>
+                            <StackPanel x:Name="BenchmarkColumn1" Grid.Column="1" Spacing="12" Margin="0,0,12,0">
+                                    <StackPanel.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="20" IsStaggeringEnabled="True" />
+                                        </TransitionCollection>
+                                    </StackPanel.ChildrenTransitions>
+                                </StackPanel>
+                            <StackPanel x:Name="BenchmarkColumn2" Grid.Column="2" Spacing="12">
+                                    <StackPanel.ChildrenTransitions>
+                                        <TransitionCollection>
+                                            <EntranceThemeTransition FromVerticalOffset="20" IsStaggeringEnabled="True" />
+                                        </TransitionCollection>
+                                    </StackPanel.ChildrenTransitions>
+                                </StackPanel>
+                        </Grid>
+
+                        <TextBlock x:Name="BenchmarkTotalText" FontSize="11.5"
+                                   Foreground="{StaticResource PSuiteTextMutedBrush}" />
+                    </StackPanel>
+                </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>
