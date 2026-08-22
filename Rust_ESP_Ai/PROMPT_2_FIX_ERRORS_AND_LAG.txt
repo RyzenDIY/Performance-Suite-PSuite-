@@ -1,0 +1,9 @@
+Task: Fix optimization issues, high CPU usage, and potential runtime crashes in my Rust AI ESP script.
+
+Please optimize the code to fix the following issues:
+1. High Resource Usage: Fix 100% CPU utilization during screen capture and inference loops. Implement frame-rate choking (`clock.tick(60)`) and disable heavy log outputs (`YOLO_VERBOSE=False`).
+2. C++ Tensor Boundary Crash: Prevent `ValueError: only one element tensors can be converted to Python scalars` when unpacking ONNX bounding boxes. Ensure shapes are safely handled via flat lists (`box.xyxy.tolist()`).
+3. Overlay Freezing: Prevent the Pygame window from going into a "Not Responding" state. Ensure `pygame.event.pump()` or an active event loop is integrated correctly.
+4. Memory Leaks: Eliminate RAM accumulation caused by continuous `mss` frame grabbing using `import gc` and memory freeing blocks.
+
+Provide fixed code templates according to these criteria.

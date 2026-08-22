@@ -1,0 +1,13 @@
+{
+  "model": "C:/Users/Ryzen and RX/Desktop/Rust_ESP_v1/yolo11n.pt",
+  "output_dir": "C:/Users/Ryzen and RX/Desktop/Rust_ESP_v1",
+  "output_name": "yolov8n",
+  "imgsz": 320,
+  "opset": 12,
+  "device": "cpu",
+  "workers": 1,
+  "batch": 1,
+  "simplify": true,
+  "dynamic": false,
+  "half": false
+}
