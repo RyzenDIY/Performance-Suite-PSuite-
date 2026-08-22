@@ -1,0 +1,3 @@
+Act as an elite Python AI developer and Low-Level Windows System Data-Type Engineer.
+I am running a real-time YOLOv8 object detection transparent overlay on a Windows PC using Pygame and OpenCV.
+The bounding boxes must be flattened via .cpu().numpy().flatten() to bypass CPU nesting bugs.

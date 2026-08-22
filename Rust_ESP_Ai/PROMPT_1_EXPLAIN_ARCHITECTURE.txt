@@ -1,0 +1,12 @@
+Context: I am building an External AI ESP Overlay for the game "Rust" on Windows 10/11.
+Project Structure:
+- `run_tracker.bat`: Automatically manages Python environment, pip packages, and Windows "Open with" context menu file associations.
+- `convert.py`: Takes a PyTorch model (`.pt`), optimizes it to FP16, filters specific classes, and exports it to a static shape `.onnx` via `onnxslim`.
+- `main.py`: Captures the game screen via `mss`, passes frames to the ONNX model, and draws green bounding boxes with confidence % over targets using a transparent, click-through Pygame window (`win32gui` / `pygetwindow`).
+
+Target Classes filtered by YOLOv8:
+- ID 0: Player
+- ID 15: Boar/Cat (In-game animals)
+- ID 16: Wolf/Dog (In-game predators)
+
+Understand this architecture so you can analyze, modify, or add features to my scripts in subsequent prompts.
