@@ -1,0 +1,18 @@
+[ OLED DISPLAY LOGIC (SSD1306) ]
+
+[ STATE 1: IDLE / LEGIT ]
+Line 1: > MODE: PASSTHROUGH
+Line 2: > Link: Standby
+Line 3: > Picos: 2 Connected
+
+[ STATE 2: ACTIVE (COMBAT) ]
+Line 1: > MODE: ACTIVE (Текст блимає)
+Line 2: > X/Y Data: STREAMING
+Line 3: > UART: 115200 baud
+
+[ STATE 3: PANIC / OFFLINE ]
+* Активація через Panic Button (GP13).
+* Екран інвертується (чорний текст на білому фоні, що світиться).
+Line 1: > HARDWARE BYPASS: OFF
+Line 2: > COM: DISCONNECTED
+Line 3: > SAFE MODE ENABLED

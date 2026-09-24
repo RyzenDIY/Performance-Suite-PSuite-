@@ -1,0 +1,395 @@
+RustVision — идеи и ТЗ для Claude
+
+ВАЖНО
+Проект делаем как самостоятельное Windows/WPF-приложение без привязки к Rust:
+- без DLL injection;
+- без чтения/записи памяти игр;
+- без обхода античита;
+- без автоматического наведения/ESP/No Recoil;
+- без функций, которые дают преимущество в сетевой игре.
+
+Цель: premium system monitor + optimizer + PSuite с качественным gaming UI.
+
+1. ВКЛАДКИ
+Dashboard
+Monitor
+Optimizer
+Processes
+PSuite
+Config
+Settings
+About
+
+Дополнительно:
+Startup
+Cleanup
+Network
+Windows
+Diagnostics
+Logs
+
+2. DASHBOARD
+- CPU/RAM/Disk/Network;
+- GPU, если доступно;
+- uptime;
+- количество процессов;
+- power plan;
+- текущий профиль;
+- живые графики;
+- Optimize Now;
+- Restore;
+- последняя операция.
+
+3. MONITOR
+Живой мониторинг CPU, RAM, Disk, Network и процессов.
+Top CPU / Top RAM.
+Настраиваемый интервал обновления.
+Пауза графиков и очистка истории.
+UI Thread не блокировать.
+
+4. OPTIMIZER
+Все изменения по возможности обратимы.
+Модули:
+- Power Plan;
+- Visual Effects;
+- Background Apps;
+- Startup Apps;
+- Temp Cleaner;
+- Cache Cleaner;
+- DNS Flush;
+- Process Priority;
+- Process Affinity;
+- Diagnostics.
+
+Перед изменением показать, что будет изменено.
+После — показать результат.
+Иметь Restore.
+
+5. PROCESSES
+Таблица:
+Name, PID, CPU, RAM, Status, Priority.
+Действия:
+Refresh, Details, Open Location, Set Priority, Set Affinity, Stop.
+Поиск, сортировка.
+Не завершать критические Windows-процессы автоматически.
+
+6. PSUITE
+Отдельный модуль:
+PSuite/Core
+PSuite/Modules
+PSuite/Profiles
+PSuite/UI
+
+Примеры:
+Temp Cleaner
+Startup Manager
+Power Plan
+Process Manager
+DNS Flush
+Cache Cleaner
+Diagnostics
+Optimization Profiles
+Backup/Restore
+
+Каждый модуль:
+Name, Description, Status, Run, Result, Undo где возможно.
+
+7. CONFIG
+JSON:
+Save, Load, Import, Export, Reset, Default.
+Профили:
+Default, Gaming, Performance, Balanced, Custom.
+
+8. SETTINGS
+- Accent Color;
+- Red intensity;
+- Dark/Black theme;
+- Transparency;
+- UI Scale;
+- animations;
+- compact mode;
+- language;
+- startup with Windows;
+- minimize to tray;
+- notifications.
+
+Цвета должны быть ресурсами:
+AccentColor
+BackgroundColor
+PanelColor
+BorderColor
+TextColor
+SecondaryTextColor
+
+9. ABOUT
+- RustVision;
+- RV logo;
+- version/build;
+- developer/team;
+- links placeholders;
+- licenses;
+- dependencies;
+- Copy System Information.
+
+10. UI
+Dark black/red premium gaming style:
+- rounded corners;
+- thin red borders;
+- subtle glow;
+- hover/active states;
+- modern buttons/toggles/sliders;
+- icons;
+- clean spacing;
+- без стандартного серого WPF-вида.
+
+11. ЛОГО
+Использовать переданный logo.png.
+Сделать:
+- full logo;
+- RV icon;
+- EXE icon;
+- header logo;
+- About logo.
+Если возможно, подготовить ICO из PNG через resource/build pipeline.
+
+12. HOTKEYS
+Только для самого приложения:
+- Toggle UI;
+- Pause Monitoring;
+- Quick Optimize;
+- Restore Last Optimization.
+
+13. NOTIFICATIONS
+Toast:
+Success / Warning / Error / Info.
+
+14. LOGGING
+Логировать:
+timestamp, module, operation, old value, new value, result.
+Кнопки:
+Open Logs, Clear Logs, Export Logs.
+
+15. BACKUP/RESTORE
+Перед изменением сохранять старое значение.
+Поддержать:
+Backup Current Settings
+Restore Backup
+
+16. СТРУКТУРА
+RustVision/
+├── App.xaml
+├── App.xaml.cs
+├── MainWindow.xaml
+├── MainWindow.xaml.cs
+├── RustVision.csproj
+├── README.md
+├── UI/
+│   ├── Theme.xaml
+│   ├── Controls.xaml
+│   └── Icons.xaml
+├── Core/
+│   ├── AppState.cs
+│   ├── ProcessManager.cs
+│   ├── SystemMonitor.cs
+│   ├── OptimizationManager.cs
+│   ├── BackupManager.cs
+│   └── Logger.cs
+├── Models/
+│   ├── AppConfig.cs
+│   ├── ProcessInfo.cs
+│   ├── OptimizationProfile.cs
+│   └── SystemSnapshot.cs
+├── Modules/
+│   ├── Dashboard/
+│   ├── Monitor/
+│   ├── Optimizer/
+│   ├── Processes/
+│   ├── PSuite/
+│   ├── Config/
+│   ├── Settings/
+│   └── About/
+├── Resources/
+│   ├── logo.png
+│   ├── logo.ico
+│   └── Fonts/
+└── Config/
+    ├── default.json
+    └── profiles/
+
+17. КРИТИЧНО ДЛЯ CLAUDE
+Пиши украинским языком.
+
+Не оставляй пустых файлов.
+Не оставляй TODO вместо реализации.
+Не пиши «остальной код без изменений».
+Каждый созданный файл должен иметь полный рабочий код.
+Namespace, x:Class и ресурсы должны совпадать.
+Все кнопки должны быть подключены.
+XAML должен собираться.
+
+Если модуль еще не готов — сделать минимальную рабочую реализацию, а не пустой файл.
+
+18. SINGLE INSTANCE
+RustVision должен запускаться только в одном экземпляре.
+При повторном запуске:
+- не создавать второе окно;
+- активировать уже открытое;
+- вывести его на передний план.
+
+Использовать Named Mutex.
+
+19. ПРОИЗВОДИТЕЛЬНОСТЬ
+Не создавать десятки DispatcherTimer.
+Использовать один scheduler/async background monitoring.
+UI обновлять через Dispatcher.
+Корректно останавливать timers, CancellationToken и события при закрытии.
+
+20. ПЕРЕД ГЕНЕРАЦИЕЙ ЗАДАТЬ ВОПРОСЫ
+1. Версия .NET?
+2. Visual Studio?
+3. WPF?
+4. x64 или AnyCPU?
+5. Минимальная Windows?
+6. Нужен tray?
+7. Нужна прозрачность?
+8. Какие цвета?
+9. Accent по умолчанию?
+10. Какой logo.png?
+11. Нужен ли portable EXE?
+12. Нужен ли installer?
+13. Publisher?
+14. Version?
+15. Auto-update?
+16. Какие PSuite-модули нужны?
+17. Нужен ли запуск с Windows?
+18. Нужны ли профили JSON?
+
+21. ИДЕИ НА БУДУЩЕЕ
+- Hardware Info;
+- SSD/S.M.A.R.T.;
+- RAM analyzer;
+- Startup Impact;
+- Service Manager;
+- Windows Debloat Recommendations;
+- game-independent FPS overlay;
+- frametime graph;
+- latency monitor;
+- packet-loss test;
+- disk benchmark;
+- CPU benchmark;
+- GPU benchmark;
+- temperature history;
+- fan monitoring;
+- profile scheduler;
+- automatic backup;
+- restore point helper;
+- portable mode;
+- installer;
+- crash reporter;
+- diagnostics export;
+- dark/red/white themes;
+- custom accent colors;
+- animated logo;
+- compact mini-dashboard.
+
+22. ГОТОВЫЙ ПРОМПТ ДЛЯ CLAUDE
+
+Ты — senior C#/.NET/WPF developer и UI/UX engineer.
+
+Нужно создать полностью рабочее Windows desktop-приложение RustVision.
+
+Пиши УКРАЇНСЬКОЮ мовою.
+
+RustVision — самостоятельный system monitor + Windows optimizer + PSuite. Не делай DLL injection, memory reading/writing, anti-cheat bypass, aimbot, ESP или автоматическое управление игрой.
+
+Я дам logo.png. Используй его как основной бренд.
+
+UI:
+dark black/red premium gaming interface;
+тонкие red borders;
+rounded cards;
+subtle glow;
+modern controls;
+sidebar;
+живые графики;
+чистый spacing;
+без стандартного серого WPF-вида.
+
+Вкладки:
+Dashboard
+Monitor
+Optimizer
+Processes
+PSuite
+Config
+Settings
+About
+
+Нужны:
+CPU/RAM/Disk/Network monitoring;
+process manager;
+safe Windows optimization;
+power plan;
+temporary files cleanup;
+DNS flush;
+startup manager;
+process priority/affinity;
+backup/restore;
+JSON configuration;
+logs;
+notifications;
+theme;
+accent color;
+transparency;
+UI scale;
+tray;
+startup with Windows.
+
+Сделай single-instance через Named Mutex.
+Повторный запуск НЕ должен создавать новое окно.
+
+Не оставляй пустых файлов.
+Не оставляй TODO вместо рабочего кода.
+Не используй выдуманные зависимости.
+Для каждого созданного файла давай ПОЛНЫЙ текст.
+Не пиши «остальные части без изменений».
+
+Сначала задай мне уточняющие вопросы по .NET, Visual Studio, WPF, x64/AnyCPU, Windows, transparency, tray, installer, portable, version, publisher и другим важным параметрам.
+
+После моих ответов:
+1. Покажи финальную структуру.
+2. Создай RustVision.csproj.
+3. Создай App.xaml/App.xaml.cs.
+4. Создай MainWindow.xaml/MainWindow.xaml.cs.
+5. Создай UI Theme/Controls/Icons.
+6. Создай Core.
+7. Создай Models.
+8. Создай Modules.
+9. Создай Config.
+10. Подключи logo.png.
+11. Проверь x:Class и namespaces.
+12. Проверь XAML resources.
+13. Проверь build configuration.
+14. Дай точные пути всех файлов.
+15. Дай команды Clean/Rebuild/Run.
+16. Дай checklist проверки.
+
+Главная цель:
+ПОЛУЧИТЬ РЕАЛЬНО СОБИРАЮЩИЙСЯ И ЗАПУСКАЮЩИЙСЯ RustVision.exe, а не красивый макет.
+
+Если находишь ошибку в проекте — исправляй ее, а не строй новые файлы поверх ошибки.
+
+Не используй несуществующие WPF properties.
+В частности, не используй LetterSpacing в стандартном WPF TextBlock.
+
+После генерации проверь:
+- csproj;
+- App.xaml;
+- App.xaml.cs;
+- MainWindow.xaml;
+- MainWindow.xaml.cs;
+- resources;
+- namespaces;
+- build target;
+- startup;
+- single-instance behavior.
