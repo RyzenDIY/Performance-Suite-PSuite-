@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>PSuite Owner</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#070b10;--card:#12181f;--line:#263042;--txt:#eef4fb;--mut:#8b97a8;
+  --acc:#2ee6a6;--acc2:#1aa37a;--warn:#f0b429;--bad:#ff6b6b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 Segoe UI,system-ui,sans-serif}
+header{padding:16px 16px 8px;border-bottom:1px solid var(--line);background:#0c1218}
+header .brand{font-weight:800;letter-spacing:.02em}
+header .brand i{color:var(--acc);font-style:normal}
+.mut{color:var(--mut);font-size:12px}
+nav{display:flex;gap:6px;padding:10px 12px;overflow:auto;position:sticky;top:0;background:#0c1218;z-index:2;border-bottom:1px solid var(--line)}
+nav button{border:0;border-radius:999px;padding:8px 12px;background:#1a222c;color:var(--txt);white-space:nowrap}
+nav button.on{background:var(--acc);color:#052816;font-weight:700}
+.wrap{padding:12px 12px 28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+.card h3{margin:0 0 10px;font-size:15px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.k{color:var(--mut)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button.btn, .btn{width:100%;border:0;border-radius:12px;padding:11px;margin-top:8px;background:#1e2833;color:var(--txt)}
+.btn.acc{background:var(--acc);color:#052816;font-weight:700}
+.btn.warn{background:#3a2e12;color:#ffd98a}
+.btn.bad{background:#3a1c1c;color:#ffd0d0}
+input,textarea,select{
+  width:100%;margin-top:8px;padding:11px;border-radius:12px;border:1px solid var(--line);
+  background:#0d131a;color:var(--txt)
+}
+textarea{min-height:80px;resize:vertical}
+.hide{display:none}
+pre{margin:0;white-space:pre-wrap;color:#c9d4e2;font-size:12px}
+.ok{color:var(--acc)} .no{color:var(--bad)}
+.note{font-size:12px;color:var(--mut);margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">PSuite <i>Owner</i></div>
+  <div class="mut" id="who">кабінет власника · дії поки через команди бота</div>
+</header>
+<nav>
+  <button class="on" data-tab="home">Головна</button>
+  <button data-tab="users">Юзери</button>
+  <button data-tab="keys">Ключі</button>
+  <button data-tab="access">Доступ</button>
+  <button data-tab="logs">Логи</button>
+  <button data-tab="chan">Канал</button>
+  <button data-tab="set">Налаштування</button>
+  <button data-tab="sec">Безпека</button>
+  <button data-tab="cmd">Команди</button>
+</nav>
+<div class="wrap">
+
+<section id="home">
+  <div class="card">
+    <h3>Огляд</h3>
+    <div class="row"><span class="k">юзери</span><b id="nUsers">з бота /owner</b></div>
+    <div class="row"><span class="k">підписки</span><b id="nSub">з бота /owner</b></div>
+    <div class="row"><span class="k">підтверджено з PSuite</span><b>verified_app</b></div>
+    <div class="row"><span class="k">ключі вільні / зайняті</span><b>список у Ключі</b></div>
+  </div>
+  <div class="card">
+    <h3>Швидко</h3>
+    <div class="grid">
+      <button class="btn acc" onclick="go('keys')">Новий ключ</button>
+      <button class="btn" onclick="go('users')">Юзер по ID</button>
+      <button class="btn" onclick="go('chan')">Написати в канал</button>
+      <button class="btn" onclick="go('logs')">Логи</button>
+    </div>
+  </div>
+</section>
+
+<section id="users" class="hide">
+  <div class="card">
+    <h3>Один юзер</h3>
+    <input id="uid" placeholder="Telegram ID наприклад 8434761413">
+    <button class="btn acc" onclick="cmd('/ok '+v('uid'))">Підтвердити вхід з програми</button>
+    <button class="btn" onclick="cmd('/unsub '+v('uid'))">Зняти підписку</button>
+    <button class="btn warn" onclick="cmd('/resethwid '+v('uid'))">Скинути HWID + verified</button>
+  </div>
+  <div class="card">
+    <h3>Усі юзери</h3>
+    <button class="btn" onclick="cmd('/owner')">Відкрити список у боті</button>
+    <button class="btn bad" onclick="cmd('кнопка в /owner → Юзери → Зняти всі підписки')">Зняти всі підписки</button>
+    <p class="note">Акаунти не видаляються. Лише has_sub=0.</p>
+  </div>
+</section>
+
+<section id="keys" class="hide">
+  <div class="card">
+    <h3>Ключі</h3>
+    <button class="btn acc" onclick="cmd('/genkey')">Випустити PSUITE-XXXXXXXX</button>
+    <input id="key" placeholder="PSUITE-XXXXXXXX">
+    <button class="btn bad" onclick="cmd('/delkey '+v('key'))">Видалити ключ</button>
+    <p class="note">Якщо ключ зайнятий — бот напише id і @нік хто використав. У канал ключі не світяться.</p>
+  </div>
+</section>
+
+<section id="access" class="hide">
+  <div class="card">
+    <h3>Вхід у PSuite</h3>
+    <p class="note">Пускає, коли є підписка + HWID + verified_app.</p>
+    <input id="uid2" placeholder="Telegram ID">
+    <button class="btn acc" onclick="cmd('/ok '+v('uid2'))">Підтвердити ПК</button>
+    <button class="btn warn" onclick="cmd('/resethwid '+v('uid2'))">Скинути прив’язку ПК</button>
+  </div>
+</section>
+
+<section id="logs" class="hide">
+  <div class="card">
+    <h3>Події</h3>
+    <button class="btn" onclick="cmd('/owner')">Дивитись останні події в боті</button>
+    <button class="btn bad" onclick="cmd('кнопка /owner → Логи → Очистити')">Очистити events</button>
+    <p class="note">Чистить тільки таблицю подій. Юзерів і ключі не чіпає.</p>
+  </div>
+</section>
+
+<section id="chan" class="hide">
+  <div class="card">
+    <h3>Канал логів</h3>
+    <p class="note">Зараз: входи юзерів. Дії власника з ключами не пишуться.</p>
+    <textarea id="say" placeholder="текст у канал"></textarea>
+    <button class="btn acc" onclick="cmd('/say '+v('say'))">Надіслати /say</button>
+    <button class="btn" onclick="cmd('пінг з /owner → Канал')">Пінг</button>
+  </div>
+</section>
+
+<section id="set" class="hide">
+  <div class="card">
+    <h3>Що вже в боті</h3>
+    <div class="row"><span class="k">канал юзерів</span><b>https://t.me/opti_PSuite</b></div>
+    <div class="row"><span class="k">реліз</span><b>GitHub releases/latest</b></div>
+    <div class="row"><span class="k">ключ живе</span><b>30 днів</b></div>
+    <div class="row"><span class="k">мова бота</span><b>українська</b></div>
+    <div class="row"><span class="k">нижнє меню</span><b>Профіль Статус Активація Завантажити Підтримка Канал</b></div>
+  </div>
+  <div class="card">
+    <h3>bot_config.json на ПК</h3>
+    <pre>token
+admin_id   ← тільки цей ID = власник
+channel_id ← -100... лог-канал</pre>
+    <p class="note">Міняється в файлі біля бота, не тут. Після правки — новий START-BOT.bat.</p>
+  </div>
+</section>
+
+<section id="sec" class="hide">
+  <div class="card">
+    <h3>Безпека</h3>
+    <div class="row"><span class="k">/owner /admin /genkey /delkey /ok /unsub /say</span><b class="ok">лише admin_id</b></div>
+    <div class="row"><span class="k">кнопки панелі</span><b class="ok">перевірка id</b></div>
+    <div class="row"><span class="k">рестарт з бота</span><b class="no">вимкнено</b></div>
+    <div class="row"><span class="k">токен у html</span><b class="ok">немає</b></div>
+  </div>
+  <div class="card">
+    <p class="note">Ця сторінка публічна на GitHub Pages. Не клади сюди токен і ключі. Живі ключі тільки в боті тобі в особисті.</p>
+  </div>
+</section>
+
+<section id="cmd" class="hide">
+  <div class="card"><pre>Власник
+/owner
+/admin          → підказка йти в /owner
+/genkey
+/delkey КОД
+/ok ID
+/unsub ID
+/resethwid ID
+/say текст
+/changelog
+
+Юзер
+/start /profile /status
+/activate КОД /bind HWID
+/download /buy /support
+/referral /reset_hwid /access</pre></div>
+</section>
+</div>
+<script>
+const tg = window.Telegram && window.Telegram.WebApp;
+if (tg) {
+  tg.ready(); tg.expand();
+  try { tg.setHeaderColor('#0c1218'); tg.setBackgroundColor('#070b10'); } catch(e) {}
+  const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
+  if (u) document.getElementById('who').textContent = (u.username ? '@'+u.username : u.first_name) + ' · id ' + u.id;
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => go(b.dataset.tab));
+function go(id){
+  document.querySelectorAll('nav button').forEach(x => x.classList.toggle('on', x.dataset.tab===id));
+  document.querySelectorAll('section').forEach(s => s.classList.toggle('hide', s.id!==id));
+}
+function v(id){ return (document.getElementById(id).value||'').trim(); }
+function cmd(t){
+  if (!t || t.endsWith(' ')) { alert('Вкажи ID або код'); return; }
+  if (tg && tg.showPopup) tg.showPopup({title:'PSuite', message:'У боті виконай:\n'+t, buttons:[{type:'ok'}]});
+  else alert('У боті виконай:\n'+t);
+}
+</script>
+</body>
+</html>
