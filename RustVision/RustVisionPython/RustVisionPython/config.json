@@ -1,0 +1,63 @@
+{
+    "fps_limit": 60,
+    "max_distance": 150,
+    "aim_fov": 100,
+    "aim_smooth": 5,
+    "aim_enabled": false,
+    "esp_enabled": false,
+    "player_colors": [
+        {
+            "lower": [
+                0,
+                40,
+                40
+            ],
+            "upper": [
+                25,
+                255,
+                255
+            ]
+        },
+        {
+            "lower": [
+                100,
+                50,
+                50
+            ],
+            "upper": [
+                140,
+                255,
+                255
+            ]
+        },
+        {
+            "lower": [
+                30,
+                50,
+                50
+            ],
+            "upper": [
+                60,
+                255,
+                255
+            ]
+        },
+        {
+            "lower": [
+                0,
+                50,
+                50
+            ],
+            "upper": [
+                10,
+                255,
+                255
+            ]
+        }
+    ],
+    "min_contour_area": 60,
+    "max_contour_area": 1200,
+    "aspect_ratio_min": 0.3,
+    "aspect_ratio_max": 1.8,
+    "roi_padding": 30
+}

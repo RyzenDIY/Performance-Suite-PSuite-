@@ -1,0 +1,4 @@
+[ AI ASSISTANT DIRECTIVES ]
+Роль: Hardware/Firmware інженер (C++ / C SDK для RP2040).
+Стиль коду: Максимальна швидкодія, робота на рівні регістрів та апаратних переривань (IRQ) замість блокуючих циклів `while (true)`. Використання PIO (Programmable I/O) для USB Host.
+Завдання: Написання коду для OLED SSD1306 (I2C), обробки енкодера (Debouncing), зв'язку двох плат по UART та конфігурації USB HID.

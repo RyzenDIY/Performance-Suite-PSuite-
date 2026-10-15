@@ -1,0 +1,23 @@
+[ PICODECK: MASTER WIRING MAP V2 ]
+
+=== BOARD #1 (CONTROLLER / UI) ===
+* I2C Шина (OLED 0.91" + INA219 Монітор живлення): 
+  - SDA -> GP4 | SCL -> GP5 | VCC -> 3V3 | GND -> GND
+* Rotary Encoder (Навігація): 
+  - CLK -> GP10 | DT -> GP11 | SW (Кнопка енкодера) -> GP12 (Pull-up)
+* Кнопки та Тумблери:
+  - Panic Button (Кнопка) -> GP13 (Pull-up)
+  - Авіаційний тумблер (Toggle Switch) -> GP14 (Апаратне блокування режимів)
+* Адресна RGB стрічка (WS2812B):
+  - Data IN -> GP15
+* UART In (Від CH340 USB-to-TTL): RX -> GP1
+* UART Out (До Board #2): TX -> GP0
+
+=== BOARD #2 (USB HOST / MOUSE EMULATOR) ===
+* USB Host (Вхід реальної миші): D+ / D- -> через OTG-адаптер на GP2/GP3 (блок PIO)
+* UART In (Від Board #1): RX -> GP1
+* USB Out (До ігрового ПК): Нативний Type-C (Спуфлені VID/PID)
+
+=== ІНДИКАЦІЯ ТА ЖИВЛЕННЯ ===
+* RX/TX LEDs: Два SMD-світлодіоди паралельно лініям GP0/GP1 через резистори 220 Ом.
+* Ground Loop: Загальна шина GND для обох плат, екрана, підсвітки та модулів.

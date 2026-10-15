@@ -1,0 +1,12 @@
+RustVision_Root/
+├── Firmware/
+│   ├── PSuite_Master_V1.uf2      (Прошивка для Pico №1)
+│   └── PSuite_Mouse_Core_V1.uf2  (Прошивка для Pico №2)
+├── Documentation/
+│   ├── Wiring_Diagram.png        (Твоя фото-схема)
+│   └── PROJECT_PASSPORT.prompt   (Інструкція для ШІ)
+├── Source/
+│   ├── main_pico1.cpp            (Код для екрана та кнопок)
+│   └── main_pico2.cpp            (Код для emulation миші)
+└── PC_Client/
+    └── rustvision_bridge.py      (Скрипт-передавач для ПК)

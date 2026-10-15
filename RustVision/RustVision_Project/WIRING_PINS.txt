@@ -1,0 +1,20 @@
+[PICO 1 -> PICO 2]
+- GP0 (TX) -> GP1 (RX)
+- GND      -> GND
+
+[USB-to-TTL -> PICO 1]
+- TX       -> GP1 (RX)
+- GND      -> GND
+
+[OLED -> PICO 1]
+- VCC      -> 3V3
+- GND      -> GND
+- SDA      -> GP4
+- SCL      -> GP5
+
+[BUTTONS -> PICO 1]
+- Button 1 -> GP14 & GND (Panic)
+- Button 2 -> GP15 & GND (Mode)
+
+[MOUSE -> PICO 2]
+- OTG Adapter -> GP2 & GP3

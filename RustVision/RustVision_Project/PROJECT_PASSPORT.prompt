@@ -1,0 +1,21 @@
+Project: RustVision (Hardware Input Merger / Cheat)
+Platform: Dual-Pico (RP2040) Setup
+Anti-Cheat Target: EAC (Rust)
+
+[HARDWARE ARCHITECTURE]
+- Pico #1 (Master): Receiver. Connected to PC via USB-to-TTL (CH340).
+  - Peripheral: OLED Display 0.91/0.96 (I2C SSD1306).
+  - Peripheral: Tactical Buttons (Profile switch + Panic Button).
+- Pico #2 (Slave): Mouse Emulator. Connected to Gaming PC.
+  - Input: Physical Mouse via Type-C OTG (using PIO USB Host 1000Hz).
+  - Connection: UART Link (Pico 1 TX -> Pico 2 RX, Common Ground).
+
+[LOGIC]
+- PC Software (RustVision) sends X,Y offsets to Pico 1 via Serial.
+- Pico 1 updates OLED, checks Buttons, sends data to Pico 2.
+- Pico 2 merges Real Mouse movement + Offsets and sends to PC.
+
+[SECURITY]
+- Full USB Spoofing (VID/PID/Serial of real mouse).
+- Physical Panic Button for instant Legit Mode.
+- No COM-port or suspect devices on Gaming PC.
