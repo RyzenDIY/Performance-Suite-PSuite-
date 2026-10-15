@@ -1,0 +1,497 @@
+<Window x:Class="RustVision.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+        Title="RustVision"
+        Width="1280" Height="760"
+        MinWidth="1050" MinHeight="650"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize"
+        Background="Transparent">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="0"
+                             ResizeBorderThickness="6"
+                             GlassFrameThickness="0"
+                             CornerRadius="0"
+                             UseAeroCaptionButtons="False" />
+    </shell:WindowChrome.WindowChrome>
+
+    <Border Style="{StaticResource RootBorderStyle}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- ==================== HEADER ==================== -->
+            <Border Grid.Row="0" Background="{StaticResource BrushPanel}"
+                    CornerRadius="10,10,0,0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <Grid Margin="14,0,10,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="/Resources/logo.png" Height="30" Stretch="Uniform"
+                               RenderOptions.BitmapScalingMode="HighQuality" Margin="0,0,10,0" />
+                        <Border Background="{StaticResource BrushPanelAlt}" CornerRadius="3"
+                                Padding="6,2" VerticalAlignment="Center">
+                            <TextBlock Text="v1.0" FontSize="10" Foreground="{StaticResource BrushMuted}" />
+                        </Border>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="1" Text="Локальний конфігураційний інтерфейс"
+                               FontSize="11" Foreground="{StaticResource BrushMuted}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Ellipse Style="{StaticResource StatusDot}" Margin="0,0,6,0" />
+                        <TextBlock Text="READY" FontSize="11" FontWeight="SemiBold"
+                                    Foreground="{StaticResource BrushSuccess}" VerticalAlignment="Center" Margin="0,0,16,0" />
+                        <Button x:Name="BtnCompact" Style="{StaticResource TitleBarButton}"
+                                Tag="{StaticResource IconCompact}" Click="BtnCompact_Click"
+                                ToolTip="Компактний режим"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True" Margin="0,0,4,0" />
+                        <Button x:Name="BtnMinimize" Style="{StaticResource TitleBarButton}"
+                                Tag="{StaticResource IconMinimize}" Click="BtnMinimize_Click"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True" />
+                        <Button x:Name="BtnClose" Style="{StaticResource CloseButton}"
+                                Tag="{StaticResource IconClose}" Click="BtnClose_Click"
+                                shell:WindowChrome.IsHitTestVisibleInChrome="True" Margin="4,0,0,0" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ==================== BODY ==================== -->
+            <Grid Grid.Row="1" Margin="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="ColNav" Width="190" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition x:Name="ColSidebar" Width="280" />
+                </Grid.ColumnDefinitions>
+
+                <!-- ============ LEFT NAVIGATION ============ -->
+                <Border Grid.Column="0" Background="{StaticResource BrushPanel}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="0,0,1,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Margin="0,14,0,0">
+                            <RadioButton x:Name="TabAim" Style="{StaticResource NavTabButton}"
+                                         Tag="{StaticResource IconAim}" IsChecked="True" Checked="NavTab_Checked">
+                                <TextBlock x:Name="TxtNavAim" Text="AIM" FontSize="13" FontFamily="{StaticResource AppFont}" />
+                            </RadioButton>
+                            <RadioButton x:Name="TabVisuals" Style="{StaticResource NavTabButton}"
+                                         Tag="{StaticResource IconVisuals}" Checked="NavTab_Checked">
+                                <TextBlock x:Name="TxtNavVisuals" Text="VISUALS" FontSize="13" FontFamily="{StaticResource AppFont}" />
+                            </RadioButton>
+                            <RadioButton x:Name="TabMisc" Style="{StaticResource NavTabButton}"
+                                         Tag="{StaticResource IconMisc}" Checked="NavTab_Checked">
+                                <TextBlock x:Name="TxtNavMisc" Text="MISC" FontSize="13" FontFamily="{StaticResource AppFont}" />
+                            </RadioButton>
+                            <RadioButton x:Name="TabConfig" Style="{StaticResource NavTabButton}"
+                                         Tag="{StaticResource IconConfig}" Checked="NavTab_Checked">
+                                <TextBlock x:Name="TxtNavConfig" Text="CONFIG" FontSize="13" FontFamily="{StaticResource AppFont}" />
+                            </RadioButton>
+                            <RadioButton x:Name="TabSettings" Style="{StaticResource NavTabButton}"
+                                         Tag="{StaticResource IconSettings}" Checked="NavTab_Checked">
+                                <TextBlock x:Name="TxtNavSettings" Text="SETTINGS" FontSize="13" FontFamily="{StaticResource AppFont}" />
+                            </RadioButton>
+                            <RadioButton x:Name="TabAbout" Style="{StaticResource NavTabButton}"
+                                         Tag="{StaticResource IconAbout}" Checked="NavTab_Checked">
+                                <TextBlock x:Name="TxtNavAbout" Text="ABOUT" FontSize="13" FontFamily="{StaticResource AppFont}" />
+                            </RadioButton>
+                        </StackPanel>
+
+                        <!-- Sidebar branding card -->
+                        <Border x:Name="SidebarBrandCard" Grid.Row="1" Margin="10,0,10,12" Padding="12"
+                                Background="{StaticResource BrushPanelAlt}" BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1" CornerRadius="8">
+                            <StackPanel>
+                                <Image Source="/Resources/logo.png" Height="26" Stretch="Uniform"
+                                       RenderOptions.BitmapScalingMode="HighQuality"
+                                       HorizontalAlignment="Left" Margin="0,0,0,6" />
+                                <TextBlock Text="Standalone build" FontSize="10" Foreground="{StaticResource BrushMuted}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- ============ CENTER CONTENT ============ -->
+                <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="24,20,20,20">
+                    <Grid>
+
+                        <!-- ==== AIM PANEL ==== -->
+                        <StackPanel x:Name="PanelAim" Visibility="Visible">
+                            <TextBlock Text="AIM" Style="{StaticResource TextTitle}" Margin="0,0,0,4" />
+                            <TextBlock Text="Interface preview only — no assist logic is executed." Style="{StaticResource TextMuted}" Margin="0,0,0,18" />
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="14" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <Border Style="{StaticResource SectionCard}" Margin="0,0,0,14">
+                                        <StackPanel>
+                                            <TextBlock Text="GENERAL" Style="{StaticResource TextSectionHeader}" />
+                                            <CheckBox x:Name="ChkAimEnable" Content="Enable" Style="{StaticResource ModernCheckBox}" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" Margin="0,0,0,14" />
+                                            <CheckBox x:Name="ChkAimShowFov" Content="Show FOV" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" Margin="0,0,0,14" />
+                                            <CheckBox x:Name="ChkAimShowIndicator" Content="Show target indicator" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" />
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource SectionCard}">
+                                        <StackPanel>
+                                            <TextBlock Text="TUNING" Style="{StaticResource TextSectionHeader}" />
+
+                                            <Grid Margin="0,0,0,16">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="FOV" Style="{StaticResource TextBody}" VerticalAlignment="Center" />
+                                                <TextBlock x:Name="TxtFovValue" Grid.Column="1" Text="45°" Style="{StaticResource TextMuted}" />
+                                            </Grid>
+                                            <Slider x:Name="SldFov" Style="{StaticResource ModernSlider}" Minimum="5" Maximum="120" Value="45"
+                                                    ValueChanged="SldFov_ValueChanged" Margin="0,0,0,18" />
+
+                                            <Grid Margin="0,0,0,16">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="Smoothness" Style="{StaticResource TextBody}" VerticalAlignment="Center" />
+                                                <TextBlock x:Name="TxtSmoothnessValue" Grid.Column="1" Text="30" Style="{StaticResource TextMuted}" />
+                                            </Grid>
+                                            <Slider x:Name="SldSmoothness" Style="{StaticResource ModernSlider}" Minimum="0" Maximum="100" Value="30"
+                                                    ValueChanged="SldSmoothness_ValueChanged" />
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <Border Style="{StaticResource SectionCard}">
+                                        <StackPanel>
+                                            <TextBlock Text="PRIORITY &amp; HOTKEY" Style="{StaticResource TextSectionHeader}" />
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,18">
+                                                <RadioButton x:Name="RbPriorityClosest" Style="{StaticResource ProfileToggleButton}" GroupName="AimPriority" IsChecked="True" Checked="Generic_CheckChanged" Margin="0,0,8,0" MinWidth="80">
+                                                    <TextBlock Text="Closest" />
+                                                </RadioButton>
+                                                <RadioButton x:Name="RbPriorityDistance" Style="{StaticResource ProfileToggleButton}" GroupName="AimPriority" Checked="Generic_CheckChanged" Margin="0,0,8,0" MinWidth="80">
+                                                    <TextBlock Text="Distance" />
+                                                </RadioButton>
+                                                <RadioButton x:Name="RbPriorityCustom" Style="{StaticResource ProfileToggleButton}" GroupName="AimPriority" Checked="Generic_CheckChanged" MinWidth="80">
+                                                    <TextBlock Text="Custom" />
+                                                </RadioButton>
+                                            </StackPanel>
+
+                                            <TextBlock Text="Hotkey" Style="{StaticResource TextBody}" Margin="0,0,0,8" />
+                                            <ComboBox x:Name="CmbHotkey" Style="{StaticResource ModernComboBox}" Width="180" HorizontalAlignment="Left" SelectedIndex="0" SelectionChanged="Generic_ComboChanged">
+                                                <ComboBoxItem Content="F6" />
+                                                <ComboBoxItem Content="Insert" />
+                                                <ComboBoxItem Content="Mouse 5" />
+                                            </ComboBox>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- ==== VISUALS PANEL ==== -->
+                        <StackPanel x:Name="PanelVisuals" Visibility="Collapsed">
+                            <TextBlock Text="VISUALS" Style="{StaticResource TextTitle}" Margin="0,0,0,4" />
+                            <TextBlock Text="Local UI preview only — nothing renders in-game." Style="{StaticResource TextMuted}" Margin="0,0,0,18" />
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="14" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Style="{StaticResource SectionCard}" VerticalAlignment="Top">
+                                    <StackPanel>
+                                        <TextBlock Text="ELEMENTS" Style="{StaticResource TextSectionHeader}" />
+                                        <CheckBox x:Name="ChkBox" Content="Box" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="VisualsOption_Changed" Unchecked="VisualsOption_Changed" Margin="0,0,0,14" />
+                                        <CheckBox x:Name="ChkName" Content="Name" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="VisualsOption_Changed" Unchecked="VisualsOption_Changed" Margin="0,0,0,14" />
+                                        <CheckBox x:Name="ChkHealth" Content="Health" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="VisualsOption_Changed" Unchecked="VisualsOption_Changed" Margin="0,0,0,14" />
+                                        <CheckBox x:Name="ChkDistance" Content="Distance" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="VisualsOption_Changed" Unchecked="VisualsOption_Changed" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Grid.Column="2" Style="{StaticResource SectionCard}" VerticalAlignment="Top">
+                                    <StackPanel>
+                                        <TextBlock Text="APPEARANCE" Style="{StaticResource TextSectionHeader}" />
+
+                                        <TextBlock Text="Color" Style="{StaticResource TextBody}" Margin="0,0,0,8" />
+                                        <ComboBox x:Name="CmbColor" Style="{StaticResource ModernComboBox}" Width="180" HorizontalAlignment="Left"
+                                                  SelectedIndex="0" SelectionChanged="CmbColor_SelectionChanged" Margin="0,0,0,18">
+                                            <ComboBoxItem Content="Red" />
+                                            <ComboBoxItem Content="White" />
+                                            <ComboBoxItem Content="Green" />
+                                            <ComboBoxItem Content="Cyan" />
+                                        </ComboBox>
+
+                                        <Grid Margin="0,0,0,16">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Opacity" Style="{StaticResource TextBody}" VerticalAlignment="Center" />
+                                            <TextBlock x:Name="TxtOpacityValue" Grid.Column="1" Text="85%" Style="{StaticResource TextMuted}" />
+                                        </Grid>
+                                        <Slider x:Name="SldOpacity" Style="{StaticResource ModernSlider}" Minimum="10" Maximum="100" Value="85"
+                                                ValueChanged="SldOpacity_ValueChanged" Margin="0,0,0,18" />
+
+                                        <TextBlock Text="Line style" Style="{StaticResource TextBody}" Margin="0,0,0,8" />
+                                        <ComboBox x:Name="CmbLineStyle" Style="{StaticResource ModernComboBox}" Width="180" HorizontalAlignment="Left"
+                                                  SelectedIndex="0" SelectionChanged="CmbLineStyle_SelectionChanged">
+                                            <ComboBoxItem Content="Solid" />
+                                            <ComboBoxItem Content="Dashed" />
+                                            <ComboBoxItem Content="Dotted" />
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- ==== MISC PANEL ==== -->
+                        <StackPanel x:Name="PanelMisc" Visibility="Collapsed">
+                            <TextBlock Text="MISC" Style="{StaticResource TextTitle}" Margin="0,0,0,4" />
+                            <TextBlock Text="General application preferences." Style="{StaticResource TextMuted}" Margin="0,0,0,18" />
+
+                            <Border Style="{StaticResource SectionCard}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <CheckBox x:Name="ChkNotifications" Content="Notifications" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" Margin="0,0,0,14" />
+                                    <CheckBox x:Name="ChkStartWithApp" Content="Start with Windows" Style="{StaticResource ModernCheckBox}" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" Margin="0,0,0,14" />
+                                    <CheckBox x:Name="ChkUiSounds" Content="UI sounds" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" Margin="0,0,0,14" />
+                                    <CheckBox x:Name="ChkAnimationsMisc" Content="Animations" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" Margin="0,0,0,14" />
+                                    <CheckBox x:Name="ChkStartMinimized" Content="Start minimized" Style="{StaticResource ModernCheckBox}" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource SectionCard}">
+                                <StackPanel>
+                                    <Grid Margin="0,0,0,16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="UI scale" Style="{StaticResource TextBody}" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="TxtUiScaleMiscValue" Grid.Column="1" Text="100%" Style="{StaticResource TextMuted}" />
+                                    </Grid>
+                                    <Slider x:Name="SldUiScaleMisc" Style="{StaticResource ModernSlider}" Minimum="80" Maximum="130" Value="100"
+                                            ValueChanged="SldUiScaleMisc_ValueChanged" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- ==== CONFIG PANEL ==== -->
+                        <StackPanel x:Name="PanelConfig" Visibility="Collapsed">
+                            <TextBlock Text="CONFIG" Style="{StaticResource TextTitle}" Margin="0,0,0,4" />
+                            <TextBlock Text="Local profiles are stored as JSON next to the executable. Changes auto-save to the selected profile." Style="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="0,0,0,18" />
+
+                            <Border Style="{StaticResource SectionCard}" Margin="0,0,0,14">
+                                <StackPanel x:Name="ProfileSelector">
+                                    <TextBlock Text="PROFILE" Style="{StaticResource TextSectionHeader}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton x:Name="RbProfileDefault" Style="{StaticResource ProfileToggleButton}" GroupName="ProfileGroup" IsChecked="True" MinWidth="90" Margin="0,0,8,0" Checked="ProfileRadio_Checked">
+                                            <TextBlock Text="Default" />
+                                        </RadioButton>
+                                        <RadioButton x:Name="RbProfileLegit" Style="{StaticResource ProfileToggleButton}" GroupName="ProfileGroup" MinWidth="90" Margin="0,0,8,0" Checked="ProfileRadio_Checked">
+                                            <TextBlock Text="Legit" />
+                                        </RadioButton>
+                                        <RadioButton x:Name="RbProfileCustom" Style="{StaticResource ProfileToggleButton}" GroupName="ProfileGroup" MinWidth="90" Checked="ProfileRadio_Checked">
+                                            <TextBlock Text="Custom" />
+                                        </RadioButton>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource SectionCard}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="ACTIONS" Style="{StaticResource TextSectionHeader}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button x:Name="BtnCfgSave" Content="SAVE" Style="{StaticResource AccentButton}" Width="100" Click="BtnCfgSave_Click" Margin="0,0,10,0" />
+                                        <Button x:Name="BtnCfgLoad" Content="LOAD" Style="{StaticResource GhostButton}" Width="100" Click="BtnCfgLoad_Click" Margin="0,0,10,0" />
+                                        <Button x:Name="BtnCfgReset" Content="RESET" Style="{StaticResource GhostButton}" Width="100" Click="BtnCfgReset_Click" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <TextBlock x:Name="TxtConfigStatus" Style="{StaticResource TextMuted}" Text="No changes yet." />
+                        </StackPanel>
+
+                        <!-- ==== SETTINGS PANEL ==== -->
+                        <StackPanel x:Name="PanelSettings" Visibility="Collapsed">
+                            <TextBlock Text="SETTINGS" Style="{StaticResource TextTitle}" Margin="0,0,0,4" />
+                            <TextBlock Text="Application-wide preferences." Style="{StaticResource TextMuted}" Margin="0,0,0,18" />
+
+                            <Border Style="{StaticResource SectionCard}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="ACCENT COLOR" Style="{StaticResource TextSectionHeader}" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton x:Name="SwRed" Style="{StaticResource AccentSwatch}" GroupName="AccentGroup" Tag="#E51E24" IsChecked="True" Checked="AccentSwatch_Checked" Margin="0,0,10,0">
+                                            <Ellipse Width="20" Height="20" Fill="#E51E24" />
+                                        </RadioButton>
+                                        <RadioButton x:Name="SwBlue" Style="{StaticResource AccentSwatch}" GroupName="AccentGroup" Tag="#2E7DE1" Checked="AccentSwatch_Checked" Margin="0,0,10,0">
+                                            <Ellipse Width="20" Height="20" Fill="#2E7DE1" />
+                                        </RadioButton>
+                                        <RadioButton x:Name="SwPurple" Style="{StaticResource AccentSwatch}" GroupName="AccentGroup" Tag="#8A2EE1" Checked="AccentSwatch_Checked" Margin="0,0,10,0">
+                                            <Ellipse Width="20" Height="20" Fill="#8A2EE1" />
+                                        </RadioButton>
+                                        <RadioButton x:Name="SwGreen" Style="{StaticResource AccentSwatch}" GroupName="AccentGroup" Tag="#2EE16B" Checked="AccentSwatch_Checked" Margin="0,0,10,0">
+                                            <Ellipse Width="20" Height="20" Fill="#2EE16B" />
+                                        </RadioButton>
+                                        <RadioButton x:Name="SwOrange" Style="{StaticResource AccentSwatch}" GroupName="AccentGroup" Tag="#E1852E" Checked="AccentSwatch_Checked" Margin="0,0,10,0">
+                                            <Ellipse Width="20" Height="20" Fill="#E1852E" />
+                                        </RadioButton>
+                                        <RadioButton x:Name="SwCyan" Style="{StaticResource AccentSwatch}" GroupName="AccentGroup" Tag="#2ED0E1" Checked="AccentSwatch_Checked">
+                                            <Ellipse Width="20" Height="20" Fill="#2ED0E1" />
+                                        </RadioButton>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource SectionCard}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Theme" Style="{StaticResource TextBody}" Margin="0,0,0,8" />
+                                    <ComboBox x:Name="CmbTheme" Style="{StaticResource ModernComboBox}" Width="180" HorizontalAlignment="Left" SelectedIndex="0" SelectionChanged="Generic_ComboChanged" Margin="0,0,0,18">
+                                        <ComboBoxItem Content="Red" />
+                                        <ComboBoxItem Content="Dark" />
+                                    </ComboBox>
+
+                                    <Grid Margin="0,0,0,16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="UI scale" Style="{StaticResource TextBody}" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="TxtUiScaleValue" Grid.Column="1" Text="100%" Style="{StaticResource TextMuted}" />
+                                    </Grid>
+                                    <Slider x:Name="SldUiScale" Style="{StaticResource ModernSlider}" Minimum="80" Maximum="130" Value="100"
+                                            ValueChanged="SldUiScale_ValueChanged" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource SectionCard}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <CheckBox x:Name="ChkAnimationsSettings" Content="Animations" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" Margin="0,0,0,14" />
+                                    <CheckBox x:Name="ChkNotificationsSettings" Content="Notifications" Style="{StaticResource ModernCheckBox}" IsChecked="True" Checked="Generic_CheckChanged" Unchecked="Generic_CheckChanged" Margin="0,0,0,14" />
+                                    <CheckBox x:Name="ChkAlwaysOnTop" Content="Always on top" Style="{StaticResource ModernCheckBox}" Checked="ChkAlwaysOnTop_Changed" Unchecked="ChkAlwaysOnTop_Changed" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource SectionCard}" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock Text="Language" Style="{StaticResource TextBody}" Margin="0,0,0,8" />
+                                    <ComboBox x:Name="CmbLanguage" Style="{StaticResource ModernComboBox}" Width="180" HorizontalAlignment="Left" SelectedIndex="0" SelectionChanged="Generic_ComboChanged">
+                                        <ComboBoxItem Content="English" />
+                                        <ComboBoxItem Content="Українська" />
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Style="{StaticResource SectionCard}">
+                                <StackPanel>
+                                    <TextBlock Text="MENU HOTKEY" Style="{StaticResource TextSectionHeader}" />
+                                    <TextBlock Text="Показує/приховує лише це вікно. Не взаємодіє з жодною грою чи процесом." Style="{StaticResource TextMuted}" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                    <ComboBox x:Name="CmbMenuHotkey" Style="{StaticResource ModernComboBox}" Width="180" HorizontalAlignment="Left"
+                                              SelectedIndex="0" SelectionChanged="CmbMenuHotkey_SelectionChanged">
+                                        <ComboBoxItem Content="Insert" />
+                                        <ComboBoxItem Content="F9" />
+                                        <ComboBoxItem Content="Home" />
+                                        <ComboBoxItem Content="Delete" />
+                                    </ComboBox>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- ==== ABOUT PANEL ==== -->
+                        <StackPanel x:Name="PanelAbout" Visibility="Collapsed">
+                            <TextBlock Text="ABOUT" Style="{StaticResource TextTitle}" Margin="0,0,0,18" />
+                            <Border Style="{StaticResource SectionCard}">
+                                <StackPanel>
+                                    <Image Source="/Resources/logo.png" Height="64" Stretch="Uniform"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           HorizontalAlignment="Left" Margin="0,0,0,14" />
+                                    <TextBlock Text="Standalone menu interface" Style="{StaticResource TextMuted}" Margin="0,0,0,10" />
+                                    <TextBlock Text="Version 1.0" Style="{StaticResource TextBody}" Margin="0,0,0,10" />
+                                    <TextBlock Text="A clean standalone WPF configuration interface." Style="{StaticResource TextBody}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                    </Grid>
+                </ScrollViewer>
+
+                <!-- ============ RIGHT SIDEBAR ============ -->
+                <ScrollViewer x:Name="SidebarScroll" Grid.Column="2" VerticalScrollBarVisibility="Auto" Padding="0,20,20,20">
+                    <StackPanel>
+
+                        <TextBlock Text="LIVE PREVIEW" Style="{StaticResource TextSectionHeader}" />
+                        <Border Style="{StaticResource SectionCard}" Padding="0" Margin="0,0,0,18" ClipToBounds="True">
+                            <Grid Height="180" Background="{StaticResource BrushPanelAlt}">
+                                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="70" Height="110">
+                                    <Border x:Name="PreviewBox" BorderBrush="{StaticResource BrushAccent}" BorderThickness="2"
+                                            CornerRadius="3" Visibility="Visible" Opacity="0.85" />
+                                    <TextBlock x:Name="PreviewName" Text="target_01" FontSize="10"
+                                               Foreground="{StaticResource BrushAccent}" HorizontalAlignment="Center"
+                                               VerticalAlignment="Top" Margin="0,-18,0,0" Visibility="Visible" />
+                                    <TextBlock x:Name="PreviewHealth" Text="100 HP" FontSize="9"
+                                               Foreground="{StaticResource BrushSuccess}" HorizontalAlignment="Center"
+                                               VerticalAlignment="Bottom" Margin="0,0,0,-16" Visibility="Visible" />
+                                    <TextBlock x:Name="PreviewDistance" Text="42m" FontSize="9"
+                                               Foreground="{StaticResource BrushTextSecondary}" HorizontalAlignment="Center"
+                                               VerticalAlignment="Bottom" Margin="0,0,0,-30" Visibility="Visible" />
+                                </Grid>
+                                <TextBlock Text="local preview — not connected to any process" FontSize="9"
+                                           Foreground="{StaticResource BrushMuted}" HorizontalAlignment="Center"
+                                           VerticalAlignment="Bottom" Margin="0,0,0,8" TextAlignment="Center" />
+                            </Grid>
+                        </Border>
+
+                        <TextBlock Text="QUICK STATUS" Style="{StaticResource TextSectionHeader}" />
+                        <Border Style="{StaticResource SectionCard}" Margin="0,0,0,18">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <Ellipse Style="{StaticResource StatusDot}" Margin="0,0,10,0" />
+                                    <TextBlock Text="Menu ready" Style="{StaticResource TextBody}" FontSize="12" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <Ellipse Style="{StaticResource StatusDot}" Margin="0,0,10,0" />
+                                    <TextBlock Text="Config system ready" Style="{StaticResource TextBody}" FontSize="12" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Ellipse Style="{StaticResource StatusDot}" Margin="0,0,10,0" />
+                                    <TextBlock Text="Standalone mode" Style="{StaticResource TextBody}" FontSize="12" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <TextBlock Text="ACTIONS" Style="{StaticResource TextSectionHeader}" />
+                        <Border Style="{StaticResource SectionCard}">
+                            <StackPanel>
+                                <Button x:Name="BtnSaveConfig" Content="SAVE CONFIG" Style="{StaticResource AccentButton}" Click="BtnSaveConfig_Click" Margin="0,0,0,10" />
+                                <Button x:Name="BtnResetAll" Content="RESET ALL" Style="{StaticResource GhostButton}" Click="BtnResetAll_Click" Margin="0,0,0,10" />
+                                <TextBlock x:Name="TxtActionStatus" Style="{StaticResource TextMuted}" HorizontalAlignment="Center" Text=" " />
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

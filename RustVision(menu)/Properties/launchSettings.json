@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RustVision": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}
