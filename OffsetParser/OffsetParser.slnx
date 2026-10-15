@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="OffsetParser/OffsetParser.vcxproj" Id="df3e4daa-5645-485d-a717-d84a2b77c6ca" />
+</Solution>
